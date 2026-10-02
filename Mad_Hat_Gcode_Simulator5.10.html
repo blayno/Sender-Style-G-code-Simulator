@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sender-Style G-code Simulator (Streaming)</title>
+<title>Mad Hat G-code Simulator</title>
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -100,11 +100,130 @@ canvas { flex: 1; background: #000; }
 
 
 
+
+/* =========================================================
+   MAD HAT BRANDING — TOP CENTER
+   ========================================================= */
+#madHatHeader {
+    position: fixed;
+    top: 0;
+    left: 37.5%;
+    transform: translateX(-50%);
+
+    z-index: 100;
+
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+    padding: 7px 20px;
+
+    background: rgba(17,17,17,0.96);
+
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+
+    border-radius: 0 0 8px 8px;
+
+    box-shadow: 0 3px 12px rgba(0,0,0,0.35);
+
+    pointer-events: none;
+}
+
+#madHatHeader img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    display: block;
+}
+
+#madHatBrandText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.05;
+}
+
+#madHatBrandName {
+    color: #f0a500;
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+#madHatProductName {
+    color: #aaa;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    margin-top: 4px;
+}
+
+#madHatFooter {
+    position: fixed;
+    left: 0;
+    bottom: 28px;
+    z-index: 19;
+    padding: 5px 10px;
+    color: #777;
+    background: rgba(17,17,17,0.88);
+    border-top: 1px solid #292929;
+    border-right: 1px solid #292929;
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    pointer-events: none;
+}
+
+#madHatFooter strong {
+    color: #f0a500;
+}
+
+@media (max-width: 700px) {
+    #madHatHeader {
+        height: 50px;
+        padding: 5px 10px;
+    }
+
+    #madHatHeader img {
+        width: 36px;
+        height: 36px;
+    }
+
+    #madHatBrandName {
+        font-size: 15px;
+    }
+
+    #madHatProductName {
+        font-size: 8px;
+    }
+}
+
 </style>
 
 <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 </head>
 <body>
+
+<!-- =========================================================
+     MAD HAT BRANDING
+     ========================================================= -->
+<div id="madHatHeader">
+    <img src="images/madhat-cnc-logo.png" alt="Mad Hat 3D Printing">
+    <div id="madHatBrandText">
+        <div id="madHatBrandName">Mad Hat</div>
+        <div id="madHatProductName">G-CODE SIMULATOR</div>
+    </div>
+</div>
+
+<div id="madHatFooter">
+    <strong>Mad Hat CNC</strong> • G-code Simulation Tool
+</div>
+
 
 
 <div class="toolbar">
@@ -554,8 +673,52 @@ renderer.setAnimationLoop(() => renderer.render(scene,camera));
 // ================= PATH GROUPS =================
 let doneGroup = new THREE.Group();
 let todoGroup = new THREE.Group();
+let activePathLine = null;
 scene.add(doneGroup);
 scene.add(todoGroup);
+
+// Live toolpath highlight: this follows the cone while the current
+// move is being simulated, instead of waiting for the whole batch.
+function clearActivePath() {
+    if (activePathLine) {
+        scene.remove(activePathLine);
+        activePathLine.geometry.dispose();
+        activePathLine.material.dispose();
+        activePathLine = null;
+    }
+}
+
+function updateActivePath(batch, segmentIndex, segmentT) {
+    if (!batch || !batch.points || batch.points.length < 2) return;
+
+    const points = [];
+
+    // Include every completed point in the current batch.
+    for (let i = 0; i <= segmentIndex; i++) {
+        const p = batch.points[i];
+        points.push(new THREE.Vector3(p.x, p.y, p.z));
+    }
+
+    // Add the exact position of the cone on the current segment.
+    const a = batch.points[segmentIndex];
+    const b = batch.points[segmentIndex + 1];
+    points.push(new THREE.Vector3(
+        a.x + (b.x - a.x) * segmentT,
+        a.y + (b.y - a.y) * segmentT,
+        a.z + (b.z - a.z) * segmentT
+    ));
+
+    clearActivePath();
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({
+        color: batch.rapid ? 0xff4444 : 0x00ff00
+    });
+
+    activePathLine = new THREE.Line(geometry, material);
+    scene.add(activePathLine);
+}
+
 
 function clearGroups(){
     scene.remove(doneGroup); scene.remove(todoGroup);
@@ -609,11 +772,18 @@ function parseGcode(text, minMove = 0.01, maxStep = 1.0) {
                         z: pos.z + dz * t
                     };
 
+                    const segmentDistance = Math.hypot(
+                        cur.x - prev.x,
+                        cur.y - prev.y,
+                        cur.z - prev.z
+                    );
+
                     segments.push({
                         from: { ...prev },
                         to: { ...cur },
                         rapid: lastG === 0,
-                        line: lineIndex
+                        line: lineIndex,
+                        distance: segmentDistance
                     });
 
                     prev = cur;
@@ -645,9 +815,15 @@ function parseGcode(text, minMove = 0.01, maxStep = 1.0) {
 
 // ================= STREAMING SIM =================
 // ================= STREAMING SIM =================
-let idx = 0, t = 0, running = false;
+let idx = 0;
+let t = 0;
+let running = false;
 let feed = 100;
 let batchedSegments = [];
+let totalPathDistance = 0;
+let simulatedDistance = 0;
+let distanceIntoSegment = 0;
+let currentSegmentIndex = 0;
 
 const progressSlider = document.getElementById('progressSlider');
 let scrubbing = false;
@@ -662,17 +838,41 @@ function buildTodoPath() {
             currentBatch = {
                 points: [s.from, s.to],
                 rapid: s.rapid,
-                lines: [s.line]
+                lines: [s.line],
+                distances: [s.distance || Math.hypot(
+                    s.to.x - s.from.x,
+                    s.to.y - s.from.y,
+                    s.to.z - s.from.z
+                )],
+                totalDistance: s.distance || Math.hypot(
+                    s.to.x - s.from.x,
+                    s.to.y - s.from.y,
+                    s.to.z - s.from.z
+                )
             };
             batchedSegments.push(currentBatch);
         } else {
+            const d = s.distance || Math.hypot(
+                s.to.x - s.from.x,
+                s.to.y - s.from.y,
+                s.to.z - s.from.z
+            );
+
             currentBatch.points.push(s.to);
             currentBatch.lines.push(s.line);
+            currentBatch.distances.push(d);
+            currentBatch.totalDistance += d;
         }
     });
 
+    totalPathDistance = batchedSegments.reduce(
+        (sum, batch) => sum + batch.totalDistance,
+        0
+    );
+
     todoGroup.clear();
     doneGroup.clear();
+    clearActivePath();
 
     batchedSegments.forEach(batch => {
         const g = new THREE.BufferGeometry().setFromPoints(
@@ -718,11 +918,15 @@ function resetSim() {
     idx = 0;
     t = 0;
     running = false;
+    simulatedDistance = 0;
+    distanceIntoSegment = 0;
+    currentSegmentIndex = 0;
 
     tool.position.set(0, 0, 0);
 
     parseGcode(gcode.value);
     buildTodoPath();
+    clearActivePath();
 
     progressSlider.value = 0;
 
@@ -771,35 +975,57 @@ progressSlider.addEventListener('change', () => {
 
 //==============Progress slider function==========================
 function setProgress(norm) {
-    // clamp 0..1
     norm = Math.max(0, Math.min(1, norm));
 
-    // total batches
-    const totalBatches = batchedSegments.length;
-    if (!totalBatches) return;
+    if (!batchedSegments.length || totalPathDistance <= 0) return;
 
-    // find batch
-    const batchFloat = norm * totalBatches;
-    idx = Math.min(Math.floor(batchFloat), totalBatches - 1);
+    const targetDistance = norm * totalPathDistance;
+    let accumulated = 0;
+    let foundBatch = batchedSegments.length - 1;
+    let foundSegment = 0;
+    let localDistance = 0;
+
+    for (let b = 0; b < batchedSegments.length; b++) {
+        const batch = batchedSegments[b];
+
+        if (targetDistance <= accumulated + batch.totalDistance) {
+            foundBatch = b;
+
+            let batchDistance = targetDistance - accumulated;
+
+            for (let j = 0; j < batch.distances.length; j++) {
+                const d = batch.distances[j];
+
+                if (batchDistance <= d || j === batch.distances.length - 1) {
+                    foundSegment = j;
+                    localDistance = Math.max(0, Math.min(d, batchDistance));
+                    break;
+                }
+
+                batchDistance -= d;
+            }
+
+            break;
+        }
+
+        accumulated += batch.totalDistance;
+    }
+
+    idx = foundBatch;
+    currentSegmentIndex = foundSegment;
+    distanceIntoSegment = localDistance;
+    simulatedDistance = targetDistance;
 
     const batch = batchedSegments[idx];
-    const segCount = batch.points.length - 1;
+    const a = batch.points[currentSegmentIndex];
+    const b = batch.points[currentSegmentIndex + 1];
+    const segmentDistance = batch.distances[currentSegmentIndex] || 1;
+    const segmentT = localDistance / segmentDistance;
 
-    // local t inside batch
-    t = batchFloat - idx;
-    t = Math.max(0, Math.min(0.9999, t));
+    t = segmentT;
+    tool.position.lerpVectors(a, b, segmentT);
 
-    // interpolate tool position
-    const segIdx = Math.min(Math.floor(t * segCount), segCount - 1);
-    const segT = t * segCount - segIdx;
-
-    const a = batch.points[segIdx];
-    const b = batch.points[segIdx + 1];
-
-    tool.position.lerpVectors(a, b, segT);
-
-    // UI updates
-    const line = batch.lines[segIdx];
+    const line = batch.lines[currentSegmentIndex];
     lineText.textContent = `Line: ${line + 1}`;
     highlightLine(line);
 
@@ -808,6 +1034,7 @@ function setProgress(norm) {
         `Y:${tool.position.y.toFixed(2)} ` +
         `Z:${tool.position.z.toFixed(2)}`;
 }
+
 
 
 // ================= AXIS HELPER =================
@@ -876,61 +1103,106 @@ createLabel('Z', new THREE.Vector3(0, 0, 120));
 // ================= LOOP =================
 let last = performance.now();
 function animate(tn) {
-    const dt = (tn - last) / 1000;
+    const dt = Math.min((tn - last) / 1000, 0.1);
     last = tn;
 
     if (running && idx < batchedSegments.length) {
-        const batch = batchedSegments[idx];
-        const total = batch.points.length - 1;
+        let distanceRemaining = feed * dt;
 
-        const segIdx = Math.min(Math.floor(t * total), total - 1);
-        const segT = t * total - segIdx;
-		
-        const a = batch.points[segIdx];
-        const b = batch.points[segIdx + 1];
+        while (distanceRemaining > 0 && idx < batchedSegments.length) {
+            const batch = batchedSegments[idx];
+            const segmentDistance = batch.distances[currentSegmentIndex] || 0;
 
-        const dist = Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z) || 1;
-        t += dt * feed / dist / total;
-		
-		if (!scrubbing && batchedSegments.length) {
-			const progress =
-				(idx + t) / batchedSegments.length;
-			progressSlider.value =
-				progress * progressSlider.max;
-		}
+            if (segmentDistance <= 0) {
+                currentSegmentIndex++;
+                distanceIntoSegment = 0;
 
-        tool.position.lerpVectors(a, b, segT);
-        posText.textContent =
-            `X:${tool.position.x.toFixed(2)} ` +
-            `Y:${tool.position.y.toFixed(2)} ` +
-            `Z:${tool.position.z.toFixed(2)}`;
-
-        const line = batch.lines[segIdx];
-        lineText.textContent = `Line: ${line + 1}`;
-        highlightLine(line);
-
-        if (t >= 1) {
-            const g = new THREE.BufferGeometry().setFromPoints(
-                batch.points.map(p => new THREE.Vector3(p.x, p.y, p.z))
-            );
-            const m = new THREE.LineBasicMaterial({
-                color: batch.rapid ? 0xff0000 : 0x00ff00
-            });
-            doneGroup.add(new THREE.Line(g, m));
-
-            if (todoGroup.children.length) {
-                todoGroup.remove(todoGroup.children[0]);
+                if (currentSegmentIndex >= batch.distances.length) {
+                    tool.position.copy(batch.points[batch.points.length - 1]);
+                    idx++;
+                    currentSegmentIndex = 0;
+                    distanceIntoSegment = 0;
+                }
+                continue;
             }
 
-            tool.position.copy(batch.points[batch.points.length - 1]);
-            idx++;
-            t = 0;
+            const remainingInSegment = segmentDistance - distanceIntoSegment;
+            const step = Math.min(distanceRemaining, remainingInSegment);
+
+            distanceIntoSegment += step;
+            simulatedDistance += step;
+            distanceRemaining -= step;
+
+            const a = batch.points[currentSegmentIndex];
+            const b = batch.points[currentSegmentIndex + 1];
+            const segmentT = distanceIntoSegment / segmentDistance;
+
+            t = segmentT;
+            tool.position.lerpVectors(a, b, segmentT);
+
+            // Update the highlighted path immediately with the cone.
+            // This happens every animation frame, so the highlight follows
+            // the tool continuously instead of appearing after the batch.
+            updateActivePath(batch, currentSegmentIndex, segmentT);
+
+            const line = batch.lines[currentSegmentIndex];
+            lineText.textContent = `Line: ${line + 1}`;
+
+            if (!scrubbing) {
+                highlightLine(line);
+            }
+
+            posText.textContent =
+                `X:${tool.position.x.toFixed(2)} ` +
+                `Y:${tool.position.y.toFixed(2)} ` +
+                `Z:${tool.position.z.toFixed(2)}`;
+
+            if (distanceIntoSegment >= segmentDistance - 0.000001) {
+                distanceIntoSegment = 0;
+                currentSegmentIndex++;
+
+                if (currentSegmentIndex >= batch.distances.length) {
+                    tool.position.copy(batch.points[batch.points.length - 1]);
+
+                    const g = new THREE.BufferGeometry().setFromPoints(
+                        batch.points.map(p => new THREE.Vector3(p.x, p.y, p.z))
+                    );
+                    const m = new THREE.LineBasicMaterial({
+                        color: batch.rapid ? 0xff0000 : 0x00ff00
+                    });
+                    doneGroup.add(new THREE.Line(g, m));
+
+                    if (todoGroup.children.length) {
+                        todoGroup.remove(todoGroup.children[0]);
+                    }
+
+                    // The batch is now fully completed, so its live highlight
+                    // becomes part of doneGroup and the next batch gets a new
+                    // live highlight.
+                    clearActivePath();
+
+                    idx++;
+                    currentSegmentIndex = 0;
+                }
+            }
+        }
+
+        if (!scrubbing && totalPathDistance > 0) {
+            progressSlider.value =
+                Math.min(1, simulatedDistance / totalPathDistance) * progressSlider.max;
+        }
+
+        if (idx >= batchedSegments.length) {
+            running = false;
+            statusText.textContent = 'Complete';
+            progressSlider.value = progressSlider.max;
         }
     }
 
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
 }
+
 
 // ================= FILE LOAD =================
 const zOffsetInput = document.getElementById('zOffset');
