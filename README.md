@@ -1,4 +1,5 @@
 ![Screenshot](images/sim.PNG)
+![Screenshot](images/sim1.PNG)
 
 This is an experimental Gcode simulator written mostly with Chat GPT 5.1
 IMPORTANT DISCLAIMER: This is my personal project and has only been tested by me.
