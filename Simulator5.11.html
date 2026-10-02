@@ -1,0 +1,4550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mad Hat G-code Simulator</title>
+
+<style>
+
+/* =========================================================
+   RESET / GLOBAL
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #111;
+    color: #ddd;
+}
+
+
+/* =========================================================
+   MAIN APPLICATION
+   ========================================================= */
+
+#app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   MAD HAT HEADER
+   ========================================================= */
+
+#madHatHeader {
+    position: fixed;
+    top: 10;
+    left: 14%;
+    transform: translateX(-50%);
+
+    z-index: 100;
+
+    height: 62px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    padding: 7px 24px;
+
+    background: rgba(17, 17, 17, 0.97);
+
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+
+    border-radius: 0 0 10px 10px;
+
+    box-shadow:
+        0 4px 16px rgba(0,0,0,0.45);
+
+    pointer-events: none;
+}
+
+#madHatHeader img {
+    width: 46px;
+    height: 46px;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+#madHatBrandText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    line-height: 1.05;
+}
+
+#madHatBrandName {
+    color: #f0a500;
+
+    font-size: 19px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+#madHatProductName {
+    color: #999;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.8px;
+
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   MAIN WORKSPACE
+   ========================================================= */
+
+#workspace {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    padding-bottom: 30px;
+}
+
+
+/* =========================================================
+   LEFT CONTROL PANEL
+   ========================================================= */
+
+#sidePanel {
+    width: 390px;
+    min-width: 390px;
+
+    height: 100%;
+
+    background: #181818;
+
+    border-right: 1px solid #333;
+
+    display: flex;
+    flex-direction: column;
+
+    /*
+       IMPORTANT:
+       The left panel scrolls independently
+       from the main 3D viewport.
+    */
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 78px 15px 20px 15px;
+
+    box-shadow:
+        4px 0 18px rgba(0,0,0,0.25);
+
+    z-index: 30;
+
+    /*
+       Prevent flexbox from shrinking the panel.
+    */
+    flex-shrink: 0;
+
+    /*
+       Makes scrolling work correctly inside
+       a flex layout.
+    */
+    min-height: 0;
+}
+
+
+/* =========================================================
+   LEFT PANEL SCROLLBAR
+   ========================================================= */
+
+#sidePanel {
+    scrollbar-width: thin;
+    scrollbar-color: #555 #111;
+}
+
+#sidePanel::-webkit-scrollbar {
+    width: 10px;
+}
+
+#sidePanel::-webkit-scrollbar-track {
+    background: #111;
+}
+
+#sidePanel::-webkit-scrollbar-thumb {
+    background: #4a4a4a;
+    border-radius: 6px;
+
+    border: 2px solid #111;
+}
+
+#sidePanel::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+
+/* =========================================================
+   PANEL SECTIONS
+   ========================================================= */
+
+.panelSection {
+    width: 100%;
+
+    background: #202020;
+
+    border: 1px solid #333;
+
+    border-radius: 9px;
+
+    margin-bottom: 15px;
+
+    overflow: hidden;
+
+    /*
+       Prevent sections from being compressed.
+    */
+    flex-shrink: 0;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.20);
+}
+
+
+/* =========================================================
+   PANEL TITLES
+   ========================================================= */
+
+.panelTitle {
+    display: flex;
+    align-items: center;
+
+    min-height: 44px;
+
+    padding: 11px 14px;
+
+    background: #252525;
+
+    border-bottom: 1px solid #333;
+
+    color: #f0a500;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    letter-spacing: 1.1px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   PANEL BODY
+   ========================================================= */
+
+.panelBody {
+    padding: 15px;
+}
+
+
+/* =========================================================
+   TOOL OPTIONS
+   ========================================================= */
+
+.toolOptions {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.toolOptions label {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-height: 42px;
+
+    padding: 10px 11px;
+
+    background: #181818;
+
+    border: 1px solid #303030;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    transition:
+        background 0.15s,
+        border-color 0.15s;
+}
+
+.toolOptions label:hover {
+    background: #242424;
+
+    border-color: #555;
+}
+
+.toolOptions input {
+    accent-color: #f0a500;
+
+    transform: scale(1.1);
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.controlGrid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 13px;
+}
+
+.controlGroup {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    min-width: 0;
+}
+
+.controlGroup.full {
+    grid-column: 1 / -1;
+}
+
+.controlGroup label {
+    color: #999;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   NUMBER / SELECT INPUTS
+   ========================================================= */
+
+input[type="number"],
+select {
+    width: 100%;
+
+    height: 40px;
+
+    padding: 7px 10px;
+
+    background: #111;
+
+    color: #ddd;
+
+    border: 1px solid #3a3a3a;
+
+    border-radius: 6px;
+
+    outline: none;
+
+    font-size: 13px;
+}
+
+input[type="number"]:focus,
+select:focus {
+    border-color: #f0a500;
+
+    box-shadow:
+        0 0 0 1px rgba(240,165,0,0.2);
+}
+
+
+/* =========================================================
+   COLOR INPUTS
+   ========================================================= */
+
+input[type="color"] {
+    width: 100%;
+
+    height: 40px;
+
+    padding: 2px;
+
+    background: #111;
+
+    border: 1px solid #3a3a3a;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   CHECKBOX / GRID OPTIONS
+   ========================================================= */
+
+.checkRow {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    min-height: 38px;
+
+    margin-top: 13px;
+
+    padding: 7px 9px;
+
+    color: #bbb;
+
+    font-size: 12px;
+
+    background: #181818;
+
+    border: 1px solid #303030;
+
+    border-radius: 6px;
+}
+
+.checkRow input {
+    accent-color: #f0a500;
+
+    transform: scale(1.1);
+}
+
+
+/* =========================================================
+   GCODE CONSOLE
+   ========================================================= */
+
+.collapsible {
+    margin-top: 13px;
+
+    border: 1px solid #333;
+
+    border-radius: 7px;
+
+    overflow: hidden;
+}
+
+.collapsible-header {
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 12px;
+
+    background: #181818;
+
+    color: #ddd;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    user-select: none;
+}
+
+.collapsible-header:hover {
+    background: #242424;
+}
+
+.collapsible-body {
+    display: block;
+
+    background: #101010;
+
+    border-top: 1px solid #333;
+}
+
+
+/* =========================================================
+   GCODE TEXTAREA
+   ========================================================= */
+
+textarea {
+    width: 100%;
+
+    height: 260px;
+
+    display: block;
+
+    padding: 11px;
+
+    background: #0d0d0d;
+
+    color: #00ff66;
+
+    border: none;
+
+    outline: none;
+
+    resize: vertical;
+
+    font-family: Consolas, "Courier New", monospace;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+textarea:focus {
+    box-shadow:
+        inset 0 0 0 1px #f0a500;
+}
+
+
+/* =========================================================
+   RESPONSIVE LEFT PANEL
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    #sidePanel {
+        width: 360px;
+        min-width: 360px;
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    #sidePanel {
+        width: 320px;
+        min-width: 320px;
+    }
+
+    .panelBody {
+        padding: 13px;
+    }
+
+    .controlGrid {
+        gap: 10px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    #sidePanel {
+        width: 300px;
+        min-width: 300px;
+
+        height: calc(100% - 30px);
+
+        padding: 68px 12px 15px 12px;
+
+        /*
+           Keep scrolling enabled on mobile.
+        */
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .panelSection {
+        margin-bottom: 12px;
+    }
+
+    .panelTitle {
+        min-height: 40px;
+
+        padding: 9px 12px;
+    }
+
+    .panelBody {
+        padding: 12px;
+    }
+
+    input[type="number"],
+    select,
+    input[type="color"] {
+        height: 38px;
+    }
+}
+
+
+/* =========================================================
+   VIEWPORT
+   ========================================================= */
+
+#viewport {
+    position: relative;
+
+    flex: 1;
+
+    min-width: 0;
+    min-height: 0;
+
+    background: #000;
+
+    overflow: hidden;
+}
+
+#canvas {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+}
+
+
+/* =========================================================
+   VIEWPORT TOOLBAR
+   ========================================================= */
+
+#simulationToolbar {
+    position: absolute;
+
+    top: 10px;
+    right: 200px;
+
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 8px;
+
+    background: rgba(25,25,25,0.94);
+
+    border: 1px solid #383838;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,0.45);
+}
+
+#simulationToolbar button {
+    height: 34px;
+
+    padding: 0 13px;
+
+    background: #252525;
+
+    color: #ddd;
+
+    border: 1px solid #444;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s,
+        border-color 0.15s,
+        transform 0.05s;
+}
+
+#simulationToolbar button:hover {
+    background: #333;
+    border-color: #666;
+}
+
+#simulationToolbar button:active {
+    transform: translateY(1px);
+}
+
+#simulationToolbar button:first-child {
+    background: #f0a500;
+    color: #111;
+    border-color: #f0a500;
+}
+
+#simulationToolbar button:first-child:hover {
+    background: #ffb51a;
+}
+
+#loadButton {
+    position: relative;
+    overflow: hidden;
+}
+
+#fileInput {
+    display: none;
+}
+
+
+/* =========================================================
+   SPEED CONTROL
+   ========================================================= */
+
+.speedControl {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding-left: 5px;
+
+    color: #aaa;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+#speedVal {
+    color: #f0a500;
+
+    min-width: 30px;
+
+    text-align: right;
+
+    font-family: monospace;
+}
+
+input[type="range"] {
+    accent-color: #f0a500;
+
+    cursor: pointer;
+}
+
+#speedSlider {
+    width: 100px;
+}
+
+
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
+
+#progressPanel {
+    position: absolute;
+
+    left: 15px;
+    right: 15px;
+    bottom: 25px;
+
+    z-index: 20;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 9px 12px;
+
+    background: rgba(25,25,25,0.94);
+
+    border: 1px solid #383838;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,0.45);
+}
+
+#progressLabel {
+    color: #aaa;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+
+    white-space: nowrap;
+}
+
+#progressSlider {
+    flex: 1;
+
+    min-width: 100px;
+}
+
+
+/* =========================================================
+   STATUS BAR
+   ========================================================= */
+
+#statusBar {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 30px;
+
+    z-index: 50;
+
+    display: flex;
+    align-items: center;
+
+    gap: 22px;
+
+    padding: 0 12px;
+
+    background: #0d0d0d;
+
+    border-top: 1px solid #333;
+
+    color: #999;
+
+    font-family: Consolas, "Courier New", monospace;
+
+    font-size: 11px;
+}
+
+#statusText {
+    color: #00ff66;
+
+    min-width: 75px;
+}
+
+#lineText {
+    color: #aaa;
+}
+
+#posText {
+    color: #f0a500;
+}
+
+
+/* =========================================================
+   FOOTER BRANDING
+   ========================================================= */
+
+#madHatFooter {
+    position: fixed;
+
+    left: 750px;
+    bottom: 31px;
+
+    z-index: 40;
+
+    padding: 4px 9px;
+
+    color: #666;
+
+    background: rgba(15,15,15,0.85);
+
+    border: 1px solid #292929;
+
+    border-radius: 5px;
+
+    font-size: 10px;
+
+    letter-spacing: 0.5px;
+
+    pointer-events: none;
+}
+
+#madHatFooter strong {
+    color: #f0a500;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    #sidePanel {
+        width: 280px;
+        min-width: 280px;
+    }
+
+    #simulationToolbar {
+        top: 70px;
+        right: 10px;
+    }
+
+    #simulationToolbar button {
+        padding: 0 9px;
+    }
+
+    .speedControl {
+        display: none;
+    }
+
+    #madHatFooter {
+        left: 292px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    #madHatHeader {
+        height: 52px;
+
+        padding: 5px 12px;
+    }
+
+    #madHatHeader img {
+        width: 37px;
+        height: 37px;
+    }
+
+    #madHatBrandName {
+        font-size: 15px;
+    }
+
+    #madHatProductName {
+        font-size: 8px;
+    }
+
+    #workspace {
+        flex-direction: column;
+    }
+
+    #sidePanel {
+        position: absolute;
+
+        top: 0;
+        left: 0;
+
+        width: 280px;
+        min-width: 280px;
+
+        height: calc(100% - 30px);
+
+        transform: translateX(-100%);
+
+        z-index: 80;
+    }
+
+    #viewport {
+        width: 100%;
+        height: 100%;
+    }
+
+    #simulationToolbar {
+        top: 62px;
+        left: 10px;
+        right: 10px;
+
+        justify-content: center;
+    }
+
+    #progressPanel {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+    }
+
+    #madHatFooter {
+        display: none;
+    }
+
+    #statusBar {
+        gap: 10px;
+
+        font-size: 9px;
+    }
+}
+
+
+/* =========================================================
+   SMALL DETAILS
+   ========================================================= */
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+::selection {
+    background: #f0a500;
+    color: #111;
+}
+
+</style>
+
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+</head>
+
+<body>
+
+<!-- =========================================================
+     MAD HAT HEADER
+     ========================================================= -->
+
+<div id="madHatHeader">
+
+    <img
+        src="images/madhat-cnc-logo.png"
+        alt="Mad Hat CNC"
+    >
+
+    <div id="madHatBrandText">
+
+        <div id="madHatBrandName">
+            Mad Hat
+        </div>
+
+        <div id="madHatProductName">
+            G-CODE SIMULATOR
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MAIN WORKSPACE
+     ========================================================= -->
+
+<div id="workspace">
+
+
+    <!-- =====================================================
+         LEFT PANEL
+         ===================================================== -->
+
+    <aside id="sidePanel">
+
+
+        <!-- TOOL PANEL -->
+
+        <div class="panelSection">
+
+            <div class="panelTitle">
+                Tool
+            </div>
+
+            <div class="panelBody">
+
+                <div class="toolOptions">
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="tool"
+                            value="cone"
+                            checked
+                        >
+                        Cone
+                    </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="tool"
+                            value="flat"
+                        >
+                        Flat Endmill
+                    </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="tool"
+                            value="ball"
+                        >
+                        Ball Endmill
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TOOL SETTINGS -->
+
+        <div class="panelSection">
+
+            <div class="panelTitle">
+                Tool Settings
+            </div>
+
+            <div class="panelBody">
+
+                <div class="controlGrid">
+
+
+                    <div class="controlGroup full">
+
+                        <label for="toolType">
+                            Tool Type
+                        </label>
+
+                        <select id="toolType">
+
+                            <option value="cone">
+                                Cone
+                            </option>
+
+                            <option value="flat">
+                                Flat
+                            </option>
+
+                            <option value="ball">
+                                Ball
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="controlGroup">
+
+                        <label for="toolRadius">
+                            Radius
+                        </label>
+
+                        <input
+                            type="number"
+                            id="toolRadius"
+                            step="0.1"
+                            value="3"
+                        >
+
+                    </div>
+
+
+                    <div class="controlGroup">
+
+                        <label for="toolHeight">
+                            Height
+                        </label>
+
+                        <input
+                            type="number"
+                            id="toolHeight"
+                            step="1"
+                            value="50"
+                        >
+
+                    </div>
+
+
+                    <div class="controlGroup full">
+
+                        <label for="toolColor">
+                            Tool Colour
+                        </label>
+
+                        <input
+                            type="color"
+                            id="toolColor"
+                            value="#00ffff"
+                        >
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- GRID SETTINGS -->
+
+        <div class="panelSection">
+
+            <div class="panelTitle">
+                Grid & Display
+            </div>
+
+            <div class="panelBody">
+
+                <div class="controlGrid">
+
+
+                    <div class="controlGroup">
+
+                        <label for="gridSize">
+                            Grid Size
+                        </label>
+
+                        <input
+                            id="gridSize"
+                            type="number"
+                            value="400"
+                            min="10"
+                            step="10"
+                        >
+
+                    </div>
+
+
+                    <div class="controlGroup">
+
+                        <label for="gridDivs">
+                            Divisions
+                        </label>
+
+                        <input
+                            id="gridDivs"
+                            type="number"
+                            value="40"
+                            min="1"
+                            step="1"
+                        >
+
+                    </div>
+
+
+                    <div class="controlGroup">
+
+                        <label for="labelStep">
+                            Label Step
+                        </label>
+
+                        <input
+                            type="number"
+                            id="labelStep"
+                            value="10"
+                            min="10"
+                            step="10"
+                        >
+
+                    </div>
+
+
+                    <div class="controlGroup">
+
+                        <label for="zOffset">
+                            Z Offset
+                        </label>
+
+                        <input
+                            type="number"
+                            id="zOffset"
+                            value="0"
+                            step="1"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <label class="checkRow">
+
+                    <input
+                        type="checkbox"
+                        id="showLabels"
+                        checked
+                    >
+
+                    Show Measurements
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- GCODE PANEL -->
+
+        <div class="panelSection">
+
+            <div class="panelTitle">
+                G-code
+            </div>
+
+            <div class="panelBody">
+
+                <div class="collapsible">
+
+                    <div
+                        class="collapsible-header"
+                        onclick="toggleGcode()"
+                        id="gcodeHeader"
+                    >
+                        ▼ G-code Console
+                    </div>
+
+                    <div
+                        class="collapsible-body"
+                        id="gcodePanel"
+                    >
+
+                        <textarea id="gcode">G90
+G0 X0 Y0 
+G1 Z-1 F200
+G1 X50 Y0
+G1 X50 Y50
+G1 X0 Y50
+G1 X0 Y0
+G1 Z-2 F200
+G1 X50 Y0
+G1 X50 Y50
+G1 X0 Y50
+G1 X0 Y0
+G1 Z-3 F200
+G1 X50 Y0
+G1 X50 Y50
+G1 X0 Y50
+G1 X0 Y0
+G0 Z5</textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- =====================================================
+         VIEWPORT
+         ===================================================== -->
+
+    <main id="viewport">
+
+        <canvas id="canvas"></canvas>
+
+
+        <!-- =================================================
+             SIMULATION TOOLBAR
+             ================================================= -->
+
+        <div id="simulationToolbar">
+
+            <button onclick="startStream()">
+                ▶ Play
+            </button>
+
+            <button onclick="pauseStream()">
+                ❚❚ Pause
+            </button>
+
+            <button onclick="resetSim()">
+                ↺ Reset
+            </button>
+
+            <button
+                id="loadButton"
+                onclick="fileInput.click()"
+            >
+                Load G-code
+            </button>
+
+            <div class="speedControl">
+
+                <span>
+                    Speed
+                </span>
+
+                <span id="speedVal">
+                    100
+                </span>
+
+                <input
+                    type="range"
+                    id="speedSlider"
+                    min="10"
+                    max="1000"
+                    value="100"
+                >
+
+            </div>
+
+            <input
+                type="file"
+                id="fileInput"
+                accept=".gcode,.nc,.txt,.tap"
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             PROGRESS
+             ================================================= -->
+
+        <div id="progressPanel">
+
+            <span id="progressLabel">
+                Progress
+            </span>
+
+            <input
+                type="range"
+                id="progressSlider"
+                min="0"
+                max="1000"
+                value="0"
+            >
+
+        </div>
+
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     STATUS BAR
+     ========================================================= -->
+
+<div id="statusBar">
+
+    <span id="statusText">
+        Idle
+    </span>
+
+    <span id="lineText">
+        Line: –
+    </span>
+
+    <span id="posText">
+        X:0 Y:0 Z:0
+    </span>
+
+</div>
+
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<div id="madHatFooter">
+
+    <strong>Mad Hat CNC</strong>
+    • G-code Simulation Tool
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   THREE.JS SETUP
+   ========================================================= */
+
+const canvas =
+    document.getElementById("canvas");
+
+const viewport =
+    document.getElementById("viewport");
+
+const scene =
+    new THREE.Scene();
+
+scene.background =
+    new THREE.Color(0x000000);
+
+
+const camera =
+    new THREE.PerspectiveCamera(
+        30,
+        viewport.clientWidth /
+        viewport.clientHeight,
+        0.1,
+        10000
+    );
+
+camera.position.set(
+    0,
+    -600,
+    200
+);
+
+camera.lookAt(
+    0,
+    0,
+    0
+);
+
+
+const renderer =
+    new THREE.WebGLRenderer({
+        canvas,
+        antialias: true
+    });
+
+
+function resizeRenderer() {
+
+    const width =
+        viewport.clientWidth;
+
+    const height =
+        viewport.clientHeight;
+
+    if (width <= 0 || height <= 0) {
+        return;
+    }
+
+    camera.aspect =
+        width / height;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+        width,
+        height,
+        false
+    );
+}
+
+resizeRenderer();
+
+window.addEventListener(
+    "resize",
+    resizeRenderer
+);
+
+
+scene.add(
+    new THREE.AmbientLight(
+        0xffffff,
+        0.4
+    )
+);
+
+
+const dl =
+    new THREE.DirectionalLight(
+        0xffffff,
+        0.8
+    );
+
+dl.position.set(
+    100,
+    -100,
+    200
+);
+
+scene.add(dl);
+
+
+/* =========================================================
+   GRID SYSTEM
+   ========================================================= */
+
+let gridGroup;
+
+const lineMaterial =
+    new THREE.LineBasicMaterial({
+        color: 0x888888
+    });
+
+
+function buildGrid() {
+
+    const showLabels =
+        document
+            .getElementById(
+                "showLabels"
+            )
+            .checked;
+
+    clearGridLabels();
+
+    if (gridGroup) {
+
+        scene.remove(
+            gridGroup
+        );
+
+    }
+
+    gridGroup =
+        new THREE.Group();
+
+
+    const size =
+        Number(
+            document
+                .getElementById(
+                    "gridSize"
+                )
+                .value
+        );
+
+    const divisions =
+        Number(
+            document
+                .getElementById(
+                    "gridDivs"
+                )
+                .value
+        );
+
+    const half =
+        size / 2;
+
+    const spacing =
+        size / divisions;
+
+
+    const grid =
+        new THREE.GridHelper(
+            size,
+            divisions,
+            0x444444,
+            0x222222
+        );
+
+    grid.rotateX(
+        Math.PI / 2
+    );
+
+    gridGroup.add(
+        grid
+    );
+
+
+    if (showLabels) {
+
+        const step =
+            Number(
+                document
+                    .getElementById(
+                        "labelStep"
+                    )
+                    .value
+            ) || 10;
+
+        const stepIndex =
+            Math.max(
+                1,
+                Math.round(
+                    step / spacing
+                )
+            );
+
+        const labelOffset = 0;
+
+
+        /* X labels */
+
+        for (
+            let i = 0;
+            i <= divisions;
+            i++
+        ) {
+
+            if (
+                i % stepIndex !== 0
+            ) {
+                continue;
+            }
+
+            const x =
+                -half +
+                i * spacing;
+
+            if (
+                Math.abs(x) <
+                0.0001
+            ) {
+                continue;
+            }
+
+            makeTextSprite(
+                x.toFixed(0),
+                new THREE.Vector3(
+                    x,
+                    labelOffset,
+                    0.02
+                )
+            );
+
+        }
+
+
+        /* Y labels */
+
+        for (
+            let i = 0;
+            i <= divisions;
+            i++
+        ) {
+
+            if (
+                i % stepIndex !== 0
+            ) {
+                continue;
+            }
+
+            const y =
+                -half +
+                i * spacing;
+
+            if (
+                Math.abs(y) <
+                0.0001
+            ) {
+                continue;
+            }
+
+            makeTextSprite(
+                y.toFixed(0),
+                new THREE.Vector3(
+                    labelOffset,
+                    y,
+                    0.02
+                )
+            );
+
+        }
+
+
+        makeTextSprite(
+            "0",
+            new THREE.Vector3(
+                0,
+                0,
+                0
+            )
+        );
+
+    }
+
+
+    /* Centre lines */
+
+    gridGroup.add(
+        makeLine(
+            new THREE.Vector3(
+                -half,
+                0,
+                0.01
+            ),
+            new THREE.Vector3(
+                half,
+                0,
+                0.01
+            )
+        )
+    );
+
+    gridGroup.add(
+        makeLine(
+            new THREE.Vector3(
+                0,
+                -half,
+                0.01
+            ),
+            new THREE.Vector3(
+                0,
+                half,
+                0.01
+            )
+        )
+    );
+
+
+    /* Tick marks */
+
+    const tickLength = 2;
+
+    for (
+        let i = 0;
+        i <= divisions;
+        i++
+    ) {
+
+        const pos =
+            -half +
+            i * spacing;
+
+        if (
+            Math.abs(pos) <
+            0.0001
+        ) {
+            continue;
+        }
+
+        gridGroup.add(
+            makeLine(
+                new THREE.Vector3(
+                    pos,
+                    -tickLength / 2,
+                    0.01
+                ),
+                new THREE.Vector3(
+                    pos,
+                    tickLength / 2,
+                    0.01
+                )
+            )
+        );
+
+        gridGroup.add(
+            makeLine(
+                new THREE.Vector3(
+                    -tickLength / 2,
+                    pos,
+                    0.01
+                ),
+                new THREE.Vector3(
+                    tickLength / 2,
+                    pos,
+                    0.01
+                )
+            )
+        );
+
+    }
+
+
+    scene.add(
+        gridGroup
+    );
+
+}
+
+
+function makeLine(a, b) {
+
+    const geo =
+        new THREE.BufferGeometry()
+            .setFromPoints([
+                a,
+                b
+            ]);
+
+    return new THREE.Line(
+        geo,
+        lineMaterial
+    );
+
+}
+
+
+/* =========================================================
+   GRID LABELS
+   ========================================================= */
+
+let gridLabels = [];
+
+
+function clearGridLabels() {
+
+    gridLabels.forEach(
+        l => scene.remove(l)
+    );
+
+    gridLabels = [];
+
+}
+
+
+function makeTextSprite(
+    text,
+    position
+) {
+
+    const labelCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    const size = 256;
+
+    labelCanvas.width =
+        size;
+
+    labelCanvas.height =
+        size;
+
+
+    const ctx =
+        labelCanvas.getContext(
+            "2d"
+        );
+
+    ctx.clearRect(
+        0,
+        0,
+        size,
+        size
+    );
+
+    ctx.fillStyle =
+        "#aaaaaa";
+
+    ctx.font =
+        "48px Arial";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    ctx.fillText(
+        text,
+        size / 2,
+        size / 2
+    );
+
+
+    const texture =
+        new THREE.CanvasTexture(
+            labelCanvas
+        );
+
+    texture.minFilter =
+        THREE.LinearFilter;
+
+
+    const mat =
+        new THREE.SpriteMaterial({
+            map: texture,
+            depthTest: false
+        });
+
+
+    const sprite =
+        new THREE.Sprite(mat);
+
+    sprite.scale.set(
+        20,
+        20,
+        1
+    );
+
+    sprite.position.copy(
+        position
+    );
+
+
+    scene.add(
+        sprite
+    );
+
+    gridLabels.push(
+        sprite
+    );
+
+}
+
+
+/* =========================================================
+   GRID INPUTS
+   ========================================================= */
+
+const stepInput =
+    document.getElementById(
+        "labelStep"
+    );
+
+stepInput.addEventListener(
+    "input",
+    buildGrid
+);
+
+
+document
+    .getElementById("showLabels")
+    .addEventListener(
+        "change",
+        buildGrid
+    );
+
+document
+    .getElementById("gridSize")
+    .addEventListener(
+        "input",
+        buildGrid
+    );
+
+document
+    .getElementById("gridDivs")
+    .addEventListener(
+        "input",
+        buildGrid
+    );
+
+
+/* =========================================================
+   CAMERA CONTROLS
+   ========================================================= */
+
+const target =
+    new THREE.Vector3();
+
+let drag = false;
+let px = 0;
+let py = 0;
+let mode = null;
+
+
+canvas.addEventListener(
+    "mousedown",
+    e => {
+
+        drag = true;
+
+        px = e.clientX;
+        py = e.clientY;
+
+        mode =
+            e.button === 0
+                ? "rotate"
+                : (
+                    e.button === 2
+                        ? "pan"
+                        : null
+                );
+
+    }
+);
+
+
+canvas.addEventListener(
+    "mouseup",
+    () => {
+        drag = false;
+    }
+);
+
+
+canvas.addEventListener(
+    "mouseleave",
+    () => {
+        drag = false;
+    }
+);
+
+
+canvas.addEventListener(
+    "mousemove",
+    e => {
+
+        if (
+            !drag ||
+            !mode
+        ) {
+            return;
+        }
+
+
+        const dx =
+            e.clientX - px;
+
+        const dy =
+            e.clientY - py;
+
+
+        px = e.clientX;
+        py = e.clientY;
+
+
+        if (
+            mode === "rotate"
+        ) {
+
+            const v =
+                camera.position
+                    .clone()
+                    .sub(target);
+
+
+            v.applyAxisAngle(
+                new THREE.Vector3(
+                    0,
+                    1,
+                    0
+                ),
+                -dx * 0.005
+            );
+
+
+            const right =
+                new THREE.Vector3()
+                    .crossVectors(
+                        v,
+                        new THREE.Vector3(
+                            0,
+                            1,
+                            0
+                        )
+                    )
+                    .normalize();
+
+
+            v.applyAxisAngle(
+                right,
+                dy * 0.005
+            );
+
+
+            camera.position.copy(
+                v.add(target)
+            );
+
+            camera.lookAt(
+                target
+            );
+
+        }
+
+
+        else if (
+            mode === "pan"
+        ) {
+
+            const panSpeed = 10;
+
+            const camDir =
+                new THREE.Vector3();
+
+            camera.getWorldDirection(
+                camDir
+            );
+
+
+            const right =
+                new THREE.Vector3()
+                    .crossVectors(
+                        camera.up,
+                        camDir
+                    )
+                    .normalize();
+
+
+            const up =
+                camera.up
+                    .clone()
+                    .normalize();
+
+
+            camera.position
+                .addScaledVector(
+                    right,
+                    dx *
+                    panSpeed *
+                    0.01
+                );
+
+            camera.position
+                .addScaledVector(
+                    up,
+                    dy *
+                    panSpeed *
+                    0.01
+                );
+
+
+            target.addScaledVector(
+                right,
+                dx *
+                panSpeed *
+                0.01
+            );
+
+            target.addScaledVector(
+                up,
+                dy *
+                panSpeed *
+                0.01
+            );
+
+
+            camera.lookAt(
+                target
+            );
+
+        }
+
+    }
+);
+
+
+canvas.addEventListener(
+    "contextmenu",
+    e => e.preventDefault()
+);
+
+
+canvas.addEventListener(
+    "wheel",
+    e => {
+
+        e.preventDefault();
+
+        const zoomFactor =
+            e.deltaY < 0
+                ? 0.9
+                : 1.1;
+
+
+        const dir =
+            camera.position
+                .clone()
+                .sub(target)
+                .multiplyScalar(
+                    zoomFactor
+                );
+
+
+        camera.position.copy(
+            target
+                .clone()
+                .add(dir)
+        );
+
+        camera.lookAt(
+            target
+        );
+
+    },
+    { passive: false }
+);
+
+
+/* =========================================================
+   TOOLS
+   ========================================================= */
+
+let tool;
+
+
+const toolPresets = {
+
+    cone: {
+        type: "cone",
+        radius: 2,
+        height: 8,
+        color: 0xffff00
+    },
+
+    flat: {
+        type: "cylinder",
+        radius: 1.5,
+        height: 40,
+        color: 0x00ffff
+    },
+
+    ball: {
+        type: "sphere",
+        radius: 1.5,
+        height: 40,
+        color: 0xff00ff
+    }
+
+};
+
+
+let currentTool =
+    structuredClone(
+        toolPresets.cone
+    );
+
+
+function buildTool(opt) {
+
+    if (tool) {
+
+        scene.remove(
+            tool
+        );
+
+    }
+
+
+    const mat =
+        new THREE.MeshStandardMaterial({
+            color: opt.color
+        });
+
+
+    if (
+        opt.type === "cone"
+    ) {
+
+        const geo =
+            new THREE.ConeGeometry(
+                opt.radius,
+                opt.height,
+                16
+            );
+
+        geo.translate(
+            0,
+            -opt.height / 2,
+            0
+        );
+
+
+        tool =
+            new THREE.Mesh(
+                geo,
+                mat
+            );
+
+
+        tool.rotation.x =
+            -Math.PI / 2;
+
+        tool.position.z =
+            0;
+
+    }
+
+
+    else if (
+        opt.type === "cylinder"
+    ) {
+
+        const geo =
+            new THREE.CylinderGeometry(
+                opt.radius,
+                opt.radius,
+                opt.height,
+                16
+            );
+
+        geo.translate(
+            0,
+            -opt.height / 2,
+            0
+        );
+
+
+        tool =
+            new THREE.Mesh(
+                geo,
+                mat
+            );
+
+
+        tool.rotation.x =
+            -Math.PI / 2;
+
+        tool.position.z =
+            0;
+
+    }
+
+
+    else if (
+        opt.type === "sphere"
+    ) {
+
+        const group =
+            new THREE.Group();
+
+
+        const hemi =
+            new THREE.Mesh(
+                new THREE.SphereGeometry(
+                    opt.radius,
+                    32,
+                    16,
+                    0,
+                    Math.PI * 2,
+                    Math.PI / 2,
+                    Math.PI / 2
+                ),
+                mat
+            );
+
+
+        hemi.position.y =
+            opt.radius;
+
+
+        group.add(
+            hemi
+        );
+
+
+        const cyl =
+            new THREE.Mesh(
+                new THREE.CylinderGeometry(
+                    opt.radius,
+                    opt.radius,
+                    opt.height,
+                    16
+                ),
+                mat
+            );
+
+
+        cyl.position.y =
+            opt.height / 2 +
+            opt.radius;
+
+
+        group.add(
+            cyl
+        );
+
+
+        group.rotation.x =
+            Math.PI / 2;
+
+
+        group.position.z =
+            0;
+
+
+        tool =
+            group;
+
+    }
+
+
+    scene.add(
+        tool
+    );
+
+}
+
+
+/* =========================================================
+   UI BINDING
+   ========================================================= */
+
+const typeSel =
+    document.getElementById(
+        "toolType"
+    );
+
+const radInp =
+    document.getElementById(
+        "toolRadius"
+    );
+
+const hInp =
+    document.getElementById(
+        "toolHeight"
+    );
+
+const colInp =
+    document.getElementById(
+        "toolColor"
+    );
+
+
+function syncUI(opt) {
+
+    if (
+        opt.type === "cylinder"
+    ) {
+
+        typeSel.value =
+            "flat";
+
+    }
+
+    else if (
+        opt.type === "sphere"
+    ) {
+
+        typeSel.value =
+            "ball";
+
+    }
+
+    else {
+
+        typeSel.value =
+            opt.type;
+
+    }
+
+
+    radInp.value =
+        opt.radius;
+
+    hInp.value =
+        opt.height ?? 0;
+
+    colInp.value =
+        "#" +
+        opt.color
+            .toString(16)
+            .padStart(
+                6,
+                "0"
+            );
+
+}
+
+
+function updateFromUI() {
+
+    currentTool.radius =
+        parseFloat(
+            radInp.value
+        );
+
+    currentTool.height =
+        parseFloat(
+            hInp.value
+        );
+
+    currentTool.color =
+        parseInt(
+            colInp.value.replace(
+                "#",
+                "0x"
+            )
+        );
+
+    buildTool(
+        currentTool
+    );
+
+}
+
+
+[
+    typeSel,
+    radInp,
+    hInp,
+    colInp
+].forEach(
+    el => {
+
+        el.addEventListener(
+            "input",
+            updateFromUI
+        );
+
+    }
+);
+
+
+document
+    .querySelectorAll(
+        'input[name="tool"]'
+    )
+    .forEach(
+        r => {
+
+            r.addEventListener(
+                "change",
+                e => {
+
+                    currentTool =
+                        structuredClone(
+                            toolPresets[
+                                e.target.value
+                            ]
+                        );
+
+                    syncUI(
+                        currentTool
+                    );
+
+                    buildTool(
+                        currentTool
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+syncUI(
+    currentTool
+);
+
+buildTool(
+    currentTool
+);
+
+
+/* =========================================================
+   PATH GROUPS
+   ========================================================= */
+
+let doneGroup =
+    new THREE.Group();
+
+let todoGroup =
+    new THREE.Group();
+
+let activePathLine =
+    null;
+
+
+scene.add(
+    doneGroup
+);
+
+scene.add(
+    todoGroup
+);
+
+
+/* =========================================================
+   ACTIVE PATH
+   ========================================================= */
+
+function clearActivePath() {
+
+    if (
+        activePathLine
+    ) {
+
+        scene.remove(
+            activePathLine
+        );
+
+        activePathLine
+            .geometry
+            .dispose();
+
+        activePathLine
+            .material
+            .dispose();
+
+        activePathLine =
+            null;
+
+    }
+
+}
+
+
+function updateActivePath(
+    batch,
+    segmentIndex,
+    segmentT
+) {
+
+    if (
+        !batch ||
+        !batch.points ||
+        batch.points.length < 2
+    ) {
+        return;
+    }
+
+
+    const points = [];
+
+
+    for (
+        let i = 0;
+        i <= segmentIndex;
+        i++
+    ) {
+
+        const p =
+            batch.points[i];
+
+        points.push(
+            new THREE.Vector3(
+                p.x,
+                p.y,
+                p.z
+            )
+        );
+
+    }
+
+
+    const a =
+        batch.points[
+            segmentIndex
+        ];
+
+    const b =
+        batch.points[
+            segmentIndex + 1
+        ];
+
+
+    points.push(
+        new THREE.Vector3(
+
+            a.x +
+            (b.x - a.x) *
+            segmentT,
+
+            a.y +
+            (b.y - a.y) *
+            segmentT,
+
+            a.z +
+            (b.z - a.z) *
+            segmentT
+
+        )
+    );
+
+
+    clearActivePath();
+
+
+    const geometry =
+        new THREE.BufferGeometry()
+            .setFromPoints(
+                points
+            );
+
+
+    const material =
+        new THREE.LineBasicMaterial({
+            color:
+                batch.rapid
+                    ? 0xff4444
+                    : 0x00ff00
+        });
+
+
+    activePathLine =
+        new THREE.Line(
+            geometry,
+            material
+        );
+
+
+    scene.add(
+        activePathLine
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR PATH GROUPS
+   ========================================================= */
+
+function clearGroups() {
+
+    scene.remove(
+        doneGroup
+    );
+
+    scene.remove(
+        todoGroup
+    );
+
+
+    doneGroup =
+        new THREE.Group();
+
+    todoGroup =
+        new THREE.Group();
+
+
+    scene.add(
+        doneGroup
+    );
+
+    scene.add(
+        todoGroup
+    );
+
+}
+
+
+/* =========================================================
+   GCODE PARSING
+   ========================================================= */
+
+let segments = [];
+
+
+function parseGcode(
+    text,
+    minMove = 0.01,
+    maxStep = 1.0
+) {
+
+    segments = [];
+
+
+    let pos = {
+        x: 0,
+        y: 0,
+        z: 0
+    };
+
+
+    let abs = true;
+
+    let lastG = 1;
+
+
+    text
+        .split(/\r?\n/)
+        .forEach(
+            (l, lineIndex) => {
+
+                const c =
+                    l
+                        .split(";")[0]
+                        .trim();
+
+
+                if (!c) {
+                    return;
+                }
+
+
+                const p =
+                    c.match(
+                        /[A-Z][-+]?\d*\.?\d+/gi
+                    );
+
+
+                if (!p) {
+                    return;
+                }
+
+
+                const cmd = {};
+
+
+                p.forEach(
+                    v => {
+
+                        cmd[
+                            v[0]
+                        ] =
+                            parseFloat(
+                                v.slice(1)
+                            );
+
+                    }
+                );
+
+
+                if (
+                    cmd.G === 90
+                ) {
+                    abs = true;
+                }
+
+
+                if (
+                    cmd.G === 91
+                ) {
+                    abs = false;
+                }
+
+
+                if (
+                    "G" in cmd
+                ) {
+                    lastG = cmd.G;
+                }
+
+
+                if (
+                    lastG === 0 ||
+                    lastG === 1
+                ) {
+
+                    const target =
+                        {
+                            ...pos
+                        };
+
+
+                    if (
+                        "X" in cmd
+                    ) {
+
+                        target.x =
+                            abs
+                                ? cmd.X
+                                : pos.x +
+                                  cmd.X;
+
+                    }
+
+
+                    if (
+                        "Y" in cmd
+                    ) {
+
+                        target.y =
+                            abs
+                                ? cmd.Y
+                                : pos.y +
+                                  cmd.Y;
+
+                    }
+
+
+                    if (
+                        "Z" in cmd
+                    ) {
+
+                        target.z =
+                            abs
+                                ? cmd.Z
+                                : pos.z +
+                                  cmd.Z;
+
+                    }
+
+
+                    const dx =
+                        target.x -
+                        pos.x;
+
+                    const dy =
+                        target.y -
+                        pos.y;
+
+                    const dz =
+                        target.z -
+                        pos.z;
+
+
+                    const dist =
+                        Math.hypot(
+                            dx,
+                            dy,
+                            dz
+                        );
+
+
+                    if (
+                        dist >= minMove
+                    ) {
+
+                        const steps =
+                            Math.max(
+                                1,
+                                Math.ceil(
+                                    dist /
+                                    maxStep
+                                )
+                            );
+
+
+                        let prev =
+                            {
+                                ...pos
+                            };
+
+
+                        for (
+                            let i = 1;
+                            i <= steps;
+                            i++
+                        ) {
+
+                            const t =
+                                i /
+                                steps;
+
+
+                            const cur = {
+
+                                x:
+                                    pos.x +
+                                    dx * t,
+
+                                y:
+                                    pos.y +
+                                    dy * t,
+
+                                z:
+                                    pos.z +
+                                    dz * t
+
+                            };
+
+
+                            const segmentDistance =
+                                Math.hypot(
+
+                                    cur.x -
+                                    prev.x,
+
+                                    cur.y -
+                                    prev.y,
+
+                                    cur.z -
+                                    prev.z
+
+                                );
+
+
+                            segments.push({
+
+                                from:
+                                    {
+                                        ...prev
+                                    },
+
+                                to:
+                                    {
+                                        ...cur
+                                    },
+
+                                rapid:
+                                    lastG === 0,
+
+                                line:
+                                    lineIndex,
+
+                                distance:
+                                    segmentDistance
+
+                            });
+
+
+                            prev =
+                                cur;
+
+                        }
+
+
+                        pos =
+                            target;
+
+                    }
+
+                }
+
+            }
+        );
+
+
+    /* Z ZERO */
+
+    let minZ =
+        Infinity;
+
+
+    segments.forEach(
+        s => {
+
+            minZ =
+                Math.min(
+                    minZ,
+                    s.from.z,
+                    s.to.z
+                );
+
+        }
+    );
+
+
+    const zOffset =
+        parseFloat(
+            document
+                .getElementById(
+                    "zOffset"
+                )
+                ?.value
+        ) || 0;
+
+
+    if (
+        minZ !== Infinity
+    ) {
+
+        segments.forEach(
+            s => {
+
+                s.from.z =
+                    s.from.z -
+                    minZ +
+                    zOffset;
+
+                s.to.z =
+                    s.to.z -
+                    minZ +
+                    zOffset;
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   STREAMING SIMULATION
+   ========================================================= */
+
+let idx = 0;
+
+let t = 0;
+
+let running = false;
+
+let feed = 100;
+
+let batchedSegments = [];
+
+let totalPathDistance = 0;
+
+let simulatedDistance = 0;
+
+let distanceIntoSegment = 0;
+
+let currentSegmentIndex = 0;
+
+
+const progressSlider =
+    document.getElementById(
+        "progressSlider"
+    );
+
+
+let scrubbing = false;
+
+
+/* =========================================================
+   BUILD TODO PATH
+   ========================================================= */
+
+function buildTodoPath() {
+
+    batchedSegments = [];
+
+    let currentBatch = null;
+
+
+    segments.forEach(
+        s => {
+
+            if (
+                !currentBatch ||
+                currentBatch.rapid !== s.rapid
+            ) {
+
+                currentBatch = {
+
+                    points: [
+                        s.from,
+                        s.to
+                    ],
+
+                    rapid:
+                        s.rapid,
+
+                    lines: [
+                        s.line
+                    ],
+
+                    distances: [
+                        s.distance ||
+                        Math.hypot(
+                            s.to.x -
+                            s.from.x,
+
+                            s.to.y -
+                            s.from.y,
+
+                            s.to.z -
+                            s.from.z
+                        )
+                    ],
+
+                    totalDistance:
+                        s.distance ||
+                        Math.hypot(
+                            s.to.x -
+                            s.from.x,
+
+                            s.to.y -
+                            s.from.y,
+
+                            s.to.z -
+                            s.from.z
+                        )
+
+                };
+
+
+                batchedSegments.push(
+                    currentBatch
+                );
+
+            }
+
+
+            else {
+
+                const d =
+                    s.distance ||
+                    Math.hypot(
+
+                        s.to.x -
+                        s.from.x,
+
+                        s.to.y -
+                        s.from.y,
+
+                        s.to.z -
+                        s.from.z
+
+                    );
+
+
+                currentBatch.points.push(
+                    s.to
+                );
+
+                currentBatch.lines.push(
+                    s.line
+                );
+
+                currentBatch.distances.push(
+                    d
+                );
+
+                currentBatch.totalDistance +=
+                    d;
+
+            }
+
+        }
+    );
+
+
+    totalPathDistance =
+        batchedSegments.reduce(
+            (sum, batch) =>
+                sum +
+                batch.totalDistance,
+            0
+        );
+
+
+    todoGroup.clear();
+
+    doneGroup.clear();
+
+    clearActivePath();
+
+
+    batchedSegments.forEach(
+        batch => {
+
+            const g =
+                new THREE.BufferGeometry()
+                    .setFromPoints(
+
+                        batch.points.map(
+                            p =>
+                                new THREE.Vector3(
+                                    p.x,
+                                    p.y,
+                                    p.z
+                                )
+                        )
+
+                    );
+
+
+            const m =
+                new THREE.LineBasicMaterial({
+
+                    color:
+                        batch.rapid
+                            ? 0xff0000
+                            : 0x00ff00,
+
+                    opacity: 0.3,
+
+                    transparent: true
+
+                });
+
+
+            todoGroup.add(
+                new THREE.Line(
+                    g,
+                    m
+                )
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   GCODE LINE HIGHLIGHT
+   ========================================================= */
+
+function highlightLine(line) {
+
+    const ta =
+        gcode;
+
+    const lines =
+        ta.value.split("\n");
+
+
+    if (
+        !lines[line]
+    ) {
+        return;
+    }
+
+
+    ta.focus({
+        preventScroll: true
+    });
+
+
+    let start = 0;
+
+
+    for (
+        let i = 0;
+        i < line;
+        i++
+    ) {
+
+        start +=
+            lines[i].length +
+            1;
+
+    }
+
+
+    ta.setSelectionRange(
+        start,
+        start +
+        lines[line].length
+    );
+
+
+    const lineHeight =
+        ta.scrollHeight /
+        lines.length;
+
+
+    const topOffsetLines = 3;
+
+
+    let targetScroll =
+        (
+            line -
+            topOffsetLines
+        ) *
+        lineHeight;
+
+
+    const maxScroll =
+        ta.scrollHeight -
+        ta.clientHeight;
+
+
+    targetScroll =
+        Math.max(
+            0,
+            Math.min(
+                targetScroll,
+                maxScroll
+            )
+        );
+
+
+    ta.scrollTop +=
+        (
+            targetScroll -
+            ta.scrollTop
+        ) *
+        0.45;
+
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+function resetSim() {
+
+    idx = 0;
+
+    t = 0;
+
+    running = false;
+
+    simulatedDistance = 0;
+
+    distanceIntoSegment = 0;
+
+    currentSegmentIndex = 0;
+
+
+    tool.position.set(
+        0,
+        0,
+        0
+    );
+
+
+    parseGcode(
+        gcode.value
+    );
+
+
+    buildTodoPath();
+
+    clearActivePath();
+
+
+    progressSlider.value =
+        0;
+
+
+    statusText.textContent =
+        "Reset";
+
+
+    lineText.textContent =
+        "Line: –";
+
+
+    posText.textContent =
+        "X:0 Y:0 Z:0";
+
+}
+
+
+/* =========================================================
+   PLAY / PAUSE
+   ========================================================= */
+
+function startStream() {
+
+    if (
+        !batchedSegments.length
+    ) {
+        return;
+    }
+
+
+    running = true;
+
+    statusText.textContent =
+        "Running";
+
+}
+
+
+function pauseStream() {
+
+    running = false;
+
+    statusText.textContent =
+        "Paused";
+
+}
+
+
+/* =========================================================
+   SPEED
+   ========================================================= */
+
+const speedSlider =
+    document.getElementById(
+        "speedSlider"
+    );
+
+const speedVal =
+    document.getElementById(
+        "speedVal"
+    );
+
+
+speedSlider.addEventListener(
+    "input",
+    () => {
+
+        feed =
+            parseFloat(
+                speedSlider.value
+            );
+
+        speedVal.textContent =
+            feed;
+
+    }
+);
+
+
+/* =========================================================
+   PROGRESS SLIDER
+   ========================================================= */
+
+progressSlider.addEventListener(
+    "input",
+    () => {
+
+        scrubbing = true;
+
+        running = false;
+
+
+        const norm =
+            progressSlider.value /
+            progressSlider.max;
+
+
+        setProgress(
+            norm
+        );
+
+
+        statusText.textContent =
+            "Scrubbing";
+
+    }
+);
+
+
+progressSlider.addEventListener(
+    "change",
+    () => {
+
+        scrubbing = false;
+
+        statusText.textContent =
+            "Paused";
+
+    }
+);
+
+
+/* =========================================================
+   SET PROGRESS
+   ========================================================= */
+
+function setProgress(norm) {
+
+    norm =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                norm
+            )
+        );
+
+
+    if (
+        !batchedSegments.length ||
+        totalPathDistance <= 0
+    ) {
+        return;
+    }
+
+
+    const targetDistance =
+        norm *
+        totalPathDistance;
+
+
+    let accumulated = 0;
+
+    let foundBatch =
+        batchedSegments.length - 1;
+
+    let foundSegment = 0;
+
+    let localDistance = 0;
+
+
+    for (
+        let b = 0;
+        b < batchedSegments.length;
+        b++
+    ) {
+
+        const batch =
+            batchedSegments[b];
+
+
+        if (
+            targetDistance <=
+            accumulated +
+            batch.totalDistance
+        ) {
+
+            foundBatch = b;
+
+
+            let batchDistance =
+                targetDistance -
+                accumulated;
+
+
+            for (
+                let j = 0;
+                j < batch.distances.length;
+                j++
+            ) {
+
+                const d =
+                    batch.distances[j];
+
+
+                if (
+                    batchDistance <= d ||
+                    j ===
+                    batch.distances.length - 1
+                ) {
+
+                    foundSegment =
+                        j;
+
+
+                    localDistance =
+                        Math.max(
+                            0,
+                            Math.min(
+                                d,
+                                batchDistance
+                            )
+                        );
+
+                    break;
+
+                }
+
+
+                batchDistance -=
+                    d;
+
+            }
+
+
+            break;
+
+        }
+
+
+        accumulated +=
+            batch.totalDistance;
+
+    }
+
+
+    idx =
+        foundBatch;
+
+    currentSegmentIndex =
+        foundSegment;
+
+    distanceIntoSegment =
+        localDistance;
+
+    simulatedDistance =
+        targetDistance;
+
+
+    const batch =
+        batchedSegments[idx];
+
+
+    const a =
+        batch.points[
+            currentSegmentIndex
+        ];
+
+    const b =
+        batch.points[
+            currentSegmentIndex + 1
+        ];
+
+
+    const segmentDistance =
+        batch.distances[
+            currentSegmentIndex
+        ] || 1;
+
+
+    const segmentT =
+        localDistance /
+        segmentDistance;
+
+
+    t =
+        segmentT;
+
+
+    tool.position.lerpVectors(
+        a,
+        b,
+        segmentT
+    );
+
+
+    const line =
+        batch.lines[
+            currentSegmentIndex
+        ];
+
+
+    lineText.textContent =
+        `Line: ${line + 1}`;
+
+
+    highlightLine(
+        line
+    );
+
+
+    posText.textContent =
+        `X:${tool.position.x.toFixed(2)} ` +
+        `Y:${tool.position.y.toFixed(2)} ` +
+        `Z:${tool.position.z.toFixed(2)}`;
+
+}
+
+
+/* =========================================================
+   AXES
+   ========================================================= */
+
+function addThickAxes(
+    len = 117
+) {
+
+    const makeAxis =
+        (dir, color) => {
+
+            const g =
+                new THREE.BufferGeometry()
+                    .setFromPoints([
+
+                        new THREE.Vector3(
+                            0,
+                            0,
+                            0
+                        ),
+
+                        dir
+                            .clone()
+                            .multiplyScalar(
+                                len
+                            )
+
+                    ]);
+
+
+            const m =
+                new THREE.LineBasicMaterial({
+                    color
+                });
+
+
+            return new THREE.Line(
+                g,
+                m
+            );
+
+        };
+
+
+    scene.add(
+        makeAxis(
+            new THREE.Vector3(
+                1,
+                0,
+                0
+            ),
+            0xff0000
+        )
+    );
+
+
+    scene.add(
+        makeAxis(
+            new THREE.Vector3(
+                0,
+                1,
+                0
+            ),
+            0x00ff00
+        )
+    );
+
+
+    scene.add(
+        makeAxis(
+            new THREE.Vector3(
+                0,
+                0,
+                1
+            ),
+            0x0000ff
+        )
+    );
+
+}
+
+
+addThickAxes();
+
+
+/* =========================================================
+   AXIS LABELS
+   ========================================================= */
+
+function createLabel(
+    text,
+    position
+) {
+
+    const labelCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    const size = 128;
+
+    labelCanvas.width =
+        size;
+
+    labelCanvas.height =
+        size;
+
+
+    const ctx =
+        labelCanvas.getContext(
+            "2d"
+        );
+
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.font =
+        "40px Arial";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+
+    ctx.fillText(
+        text,
+        size / 2,
+        size / 2
+    );
+
+
+    const texture =
+        new THREE.CanvasTexture(
+            labelCanvas
+        );
+
+
+    const sprite =
+        new THREE.Sprite(
+            new THREE.SpriteMaterial({
+                map: texture
+            })
+        );
+
+
+    sprite.scale.set(
+        20,
+        20,
+        1
+    );
+
+
+    sprite.position.copy(
+        position
+    );
+
+
+    scene.add(
+        sprite
+    );
+
+}
+
+
+createLabel(
+    "X",
+    new THREE.Vector3(
+        120,
+        0,
+        0
+    )
+);
+
+
+createLabel(
+    "Y",
+    new THREE.Vector3(
+        0,
+        120,
+        0
+    )
+);
+
+
+createLabel(
+    "Z",
+    new THREE.Vector3(
+        0,
+        0,
+        120
+    )
+);
+
+
+/* =========================================================
+   ANIMATION LOOP
+   ========================================================= */
+
+let last =
+    performance.now();
+
+
+function animate(tn) {
+
+    const dt =
+        Math.min(
+            (
+                tn -
+                last
+            ) / 1000,
+            0.1
+        );
+
+
+    last =
+        tn;
+
+
+    if (
+        running &&
+        idx <
+        batchedSegments.length
+    ) {
+
+        let distanceRemaining =
+            feed *
+            dt;
+
+
+        while (
+            distanceRemaining > 0 &&
+            idx <
+            batchedSegments.length
+        ) {
+
+            const batch =
+                batchedSegments[idx];
+
+
+            const segmentDistance =
+                batch.distances[
+                    currentSegmentIndex
+                ] || 0;
+
+
+            if (
+                segmentDistance <= 0
+            ) {
+
+                currentSegmentIndex++;
+
+                distanceIntoSegment = 0;
+
+
+                if (
+                    currentSegmentIndex >=
+                    batch.distances.length
+                ) {
+
+                    tool.position.copy(
+                        batch.points[
+                            batch.points.length - 1
+                        ]
+                    );
+
+
+                    idx++;
+
+                    currentSegmentIndex =
+                        0;
+
+                    distanceIntoSegment =
+                        0;
+
+                }
+
+
+                continue;
+
+            }
+
+
+            const remainingInSegment =
+                segmentDistance -
+                distanceIntoSegment;
+
+
+            const step =
+                Math.min(
+                    distanceRemaining,
+                    remainingInSegment
+                );
+
+
+            distanceIntoSegment +=
+                step;
+
+            simulatedDistance +=
+                step;
+
+            distanceRemaining -=
+                step;
+
+
+            const a =
+                batch.points[
+                    currentSegmentIndex
+                ];
+
+            const b =
+                batch.points[
+                    currentSegmentIndex + 1
+                ];
+
+
+            const segmentT =
+                distanceIntoSegment /
+                segmentDistance;
+
+
+            t =
+                segmentT;
+
+
+            tool.position.lerpVectors(
+                a,
+                b,
+                segmentT
+            );
+
+
+            /* Live toolpath */
+
+            updateActivePath(
+                batch,
+                currentSegmentIndex,
+                segmentT
+            );
+
+
+            const line =
+                batch.lines[
+                    currentSegmentIndex
+                ];
+
+
+            lineText.textContent =
+                `Line: ${line + 1}`;
+
+
+            if (
+                !scrubbing
+            ) {
+
+                highlightLine(
+                    line
+                );
+
+            }
+
+
+            posText.textContent =
+                `X:${tool.position.x.toFixed(2)} ` +
+                `Y:${tool.position.y.toFixed(2)} ` +
+                `Z:${tool.position.z.toFixed(2)}`;
+
+
+            if (
+                distanceIntoSegment >=
+                segmentDistance -
+                0.000001
+            ) {
+
+                distanceIntoSegment = 0;
+
+                currentSegmentIndex++;
+
+
+                if (
+                    currentSegmentIndex >=
+                    batch.distances.length
+                ) {
+
+                    tool.position.copy(
+                        batch.points[
+                            batch.points.length - 1
+                        ]
+                    );
+
+
+                    const g =
+                        new THREE.BufferGeometry()
+                            .setFromPoints(
+
+                                batch.points.map(
+                                    p =>
+                                        new THREE.Vector3(
+                                            p.x,
+                                            p.y,
+                                            p.z
+                                        )
+                                )
+
+                            );
+
+
+                    const m =
+                        new THREE.LineBasicMaterial({
+
+                            color:
+                                batch.rapid
+                                    ? 0xff0000
+                                    : 0x00ff00
+
+                        });
+
+
+                    doneGroup.add(
+                        new THREE.Line(
+                            g,
+                            m
+                        )
+                    );
+
+
+                    if (
+                        todoGroup.children.length
+                    ) {
+
+                        todoGroup.remove(
+                            todoGroup.children[0]
+                        );
+
+                    }
+
+
+                    clearActivePath();
+
+
+                    idx++;
+
+                    currentSegmentIndex =
+                        0;
+
+                }
+
+            }
+
+        }
+
+
+        if (
+            !scrubbing &&
+            totalPathDistance > 0
+        ) {
+
+            progressSlider.value =
+                Math.min(
+                    1,
+                    simulatedDistance /
+                    totalPathDistance
+                ) *
+                progressSlider.max;
+
+        }
+
+
+        if (
+            idx >=
+            batchedSegments.length
+        ) {
+
+            running = false;
+
+            statusText.textContent =
+                "Complete";
+
+            progressSlider.value =
+                progressSlider.max;
+
+        }
+
+    }
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+
+    requestAnimationFrame(
+        animate
+    );
+
+}
+
+
+/* =========================================================
+   FILE LOAD
+   ========================================================= */
+
+const zOffsetInput =
+    document.getElementById(
+        "zOffset"
+    );
+
+
+const fileInput =
+    document.getElementById(
+        "fileInput"
+    );
+
+
+fileInput.addEventListener(
+    "change",
+    () => {
+
+        const f =
+            fileInput.files[0];
+
+
+        if (!f) {
+            return;
+        }
+
+
+        const r =
+            new FileReader();
+
+
+        r.onload =
+            e => {
+
+                gcode.value =
+                    e.target.result;
+
+
+                parseGcode(
+                    e.target.result
+                );
+
+
+                resetSim();
+
+            };
+
+
+        r.readAsText(
+            f
+        );
+
+    }
+);
+
+
+/* =========================================================
+   LIVE Z OFFSET
+   ========================================================= */
+
+function applyZOffsetLive() {
+
+    if (
+        !segments ||
+        segments.length === 0
+    ) {
+        return;
+    }
+
+
+    let minZ =
+        Infinity;
+
+
+    segments.forEach(
+        s => {
+
+            minZ =
+                Math.min(
+                    minZ,
+                    s.from.z,
+                    s.to.z
+                );
+
+        }
+    );
+
+
+    const offset =
+        parseFloat(
+            zOffsetInput.value
+        ) || 0;
+
+
+    const adjustedSegments =
+        segments.map(
+            s => ({
+
+                from: {
+                    x: s.from.x,
+                    y: s.from.y,
+                    z:
+                        s.from.z -
+                        minZ +
+                        offset
+                },
+
+                to: {
+                    x: s.to.x,
+                    y: s.to.y,
+                    z:
+                        s.to.z -
+                        minZ +
+                        offset
+                },
+
+                rapid:
+                    s.rapid,
+
+                line:
+                    s.line,
+
+                distance:
+                    s.distance
+
+            })
+        );
+
+
+    segments =
+        adjustedSegments;
+
+
+    buildTodoPath();
+
+
+    if (
+        idx <
+        batchedSegments.length
+    ) {
+
+        const batch =
+            batchedSegments[idx];
+
+
+        const total =
+            batch.points.length -
+            1;
+
+
+        const segIdx =
+            Math.min(
+                Math.floor(
+                    t * total
+                ),
+                total - 1
+            );
+
+
+        const segT =
+            t * total -
+            segIdx;
+
+
+        const a =
+            batch.points[
+                segIdx
+            ];
+
+        const b =
+            batch.points[
+                segIdx + 1
+            ];
+
+
+        tool.position.lerpVectors(
+            a,
+            b,
+            segT
+        );
+
+    }
+
+}
+
+
+zOffsetInput.addEventListener(
+    "input",
+    applyZOffsetLive
+);
+
+
+/* =========================================================
+   GCODE COLLAPSE
+   ========================================================= */
+
+let gcodeOpen = true;
+
+
+function toggleGcode() {
+
+    const panel =
+        document.getElementById(
+            "gcodePanel"
+        );
+
+    const header =
+        document.getElementById(
+            "gcodeHeader"
+        );
+
+
+    gcodeOpen =
+        !gcodeOpen;
+
+
+    if (
+        gcodeOpen
+    ) {
+
+        panel.style.display =
+            "block";
+
+        header.textContent =
+            "▼ G-code Console";
+
+    }
+
+    else {
+
+        panel.style.display =
+            "none";
+
+        header.textContent =
+            "▶ G-code Console";
+
+    }
+
+}
+
+
+/* =========================================================
+   GCODE EDITOR LIVE REBUILD
+   ========================================================= */
+
+gcode.addEventListener(
+    "input",
+    () => {
+
+        parseGcode(
+            gcode.value
+        );
+
+        buildTodoPath();
+
+        idx = 0;
+        currentSegmentIndex = 0;
+        distanceIntoSegment = 0;
+        simulatedDistance = 0;
+        running = false;
+
+        progressSlider.value = 0;
+
+        statusText.textContent =
+            "G-code Updated";
+
+        lineText.textContent =
+            "Line: –";
+
+    }
+);
+
+
+/* =========================================================
+   INITIALISE
+   ========================================================= */
+
+buildGrid();
+
+parseGcode(
+    gcode.value
+);
+
+buildTodoPath();
+
+resetSim();
+
+animate(
+    last
+);
+
+</script>
+
+</body>
+</html>
