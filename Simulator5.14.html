@@ -370,9 +370,6 @@ input[type="color"] {
     font-family: Consolas, "Courier New", monospace;
 }
 
-
-/* TOOLBAR */
-
 .gcodeEditorToolbar {
     height: 42px;
 
@@ -455,9 +452,6 @@ input[type="color"] {
     font-family: Consolas, "Courier New", monospace;
 }
 
-
-/* EDITOR BODY */
-
 .gcodeEditorBody {
     position: relative;
 
@@ -470,9 +464,6 @@ input[type="color"] {
 
     background: #0d0d0d;
 }
-
-
-/* LINE NUMBERS */
 
 #lineNumbers {
     width: 48px;
@@ -516,9 +507,6 @@ input[type="color"] {
     font-weight: 700;
 }
 
-
-/* CODE AREA */
-
 .gcodeCodeArea {
     position: relative;
 
@@ -528,9 +516,6 @@ input[type="color"] {
 
     overflow: hidden;
 }
-
-
-/* SYNTAX LAYER */
 
 #syntaxLayer {
     position: absolute;
@@ -557,9 +542,6 @@ input[type="color"] {
 
     tab-size: 4;
 }
-
-
-/* ACTUAL EDITOR */
 
 #gcode {
     position: absolute;
@@ -603,9 +585,6 @@ input[type="color"] {
     box-shadow: inset 0 0 0 1px #f0a500;
 }
 
-
-/* SYNTAX COLOURS */
-
 .gcode-command {
     color: #f0a500;
     font-weight: 700;
@@ -631,9 +610,6 @@ input[type="color"] {
     color: #666;
     font-style: italic;
 }
-
-
-/* SCROLLBARS */
 
 .gcodeEditorBody ::-webkit-scrollbar,
 #gcode::-webkit-scrollbar {
@@ -684,14 +660,147 @@ input[type="color"] {
 
 
 /* =========================================================
-   VIEWPORT TOOLBAR
+   VIEW PRESET TOOLBAR
+   ========================================================= */
+
+#viewToolbar {
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    z-index: 25;
+
+    display: flex;
+    align-items: center;
+
+    gap: 4px;
+
+    padding: 6px;
+
+    background: rgba(25,25,25,0.94);
+
+    border: 1px solid #383838;
+    border-radius: 8px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.45);
+}
+
+#viewToolbar button {
+    min-width: 52px;
+    height: 32px;
+
+    padding: 0 9px;
+
+    background: #252525;
+    color: #ccc;
+
+    border: 1px solid #444;
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+
+    transition:
+        background 0.15s,
+        border-color 0.15s;
+}
+
+#viewToolbar button:hover {
+    background: #333;
+    border-color: #666;
+}
+
+#viewToolbar button.active {
+    background: #f0a500;
+    color: #111;
+    border-color: #f0a500;
+}
+
+
+/* =========================================================
+   VIEWPORT HUD
+   ========================================================= */
+
+#viewportHud {
+    position: absolute;
+
+    left: 12px;
+    bottom: 62px;
+
+    z-index: 20;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    padding: 7px 10px;
+
+    background: rgba(15,15,15,0.78);
+
+    border: 1px solid #292929;
+    border-radius: 6px;
+
+    pointer-events: none;
+
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 10px;
+
+    color: #777;
+}
+
+#viewNameHud {
+    color: #f0a500;
+    font-weight: 700;
+}
+
+#cameraDistanceHud {
+    color: #888;
+}
+
+#cameraHelpHud {
+    color: #666;
+}
+
+
+/* =========================================================
+   AXIS GIZMO
+   ========================================================= */
+
+#axisGizmo {
+    position: absolute;
+
+    top: 72px;
+    right: 14px;
+
+    width: 105px;
+    height: 105px;
+
+    z-index: 20;
+
+    pointer-events: none;
+
+    background: rgba(10,10,10,0.65);
+
+    border: 1px solid #333;
+    border-radius: 50%;
+
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+
+/* =========================================================
+   SIMULATION TOOLBAR
    ========================================================= */
 
 #simulationToolbar {
     position: absolute;
 
     top: 10px;
-    right: 200px;
+    right: 50px;
 
     z-index: 20;
 
@@ -939,6 +1048,16 @@ input[type="range"] {
         right: 10px;
     }
 
+    #viewToolbar {
+        top: 10px;
+        left: 10px;
+    }
+
+    #viewToolbar button {
+        min-width: 45px;
+        padding: 0 7px;
+    }
+
     #simulationToolbar button {
         padding: 0 9px;
     }
@@ -1007,8 +1126,25 @@ input[type="range"] {
         height: 100%;
     }
 
-    #simulationToolbar {
+    #viewToolbar {
         top: 62px;
+        left: 10px;
+        right: 10px;
+
+        justify-content: center;
+
+        gap: 3px;
+    }
+
+    #viewToolbar button {
+        flex: 1;
+        min-width: 0;
+        padding: 0 4px;
+        font-size: 9px;
+    }
+
+    #simulationToolbar {
+        top: 106px;
         left: 10px;
         right: 10px;
 
@@ -1019,6 +1155,18 @@ input[type="range"] {
         left: 10px;
         right: 10px;
         bottom: 10px;
+    }
+
+    #axisGizmo {
+        top: 160px;
+        right: 10px;
+        width: 82px;
+        height: 82px;
+    }
+
+    #viewportHud {
+        left: 10px;
+        bottom: 62px;
     }
 
     #madHatFooter {
@@ -1356,8 +1504,6 @@ textarea {
 
                         <div class="gcodeEditor">
 
-                            <!-- EDITOR TOOLBAR -->
-
                             <div class="gcodeEditorToolbar">
 
                                 <input
@@ -1395,8 +1541,6 @@ textarea {
 
                             </div>
 
-
-                            <!-- EDITOR BODY -->
 
                             <div class="gcodeEditorBody">
 
@@ -1453,6 +1597,78 @@ G0 Z5</textarea>
         <canvas id="canvas"></canvas>
 
 
+        <!-- VIEW PRESETS -->
+
+        <div id="viewToolbar">
+
+            <button
+                id="viewTop"
+                onclick="setCameraPreset('top')"
+            >
+                TOP
+            </button>
+
+            <button
+                id="viewFront"
+                onclick="setCameraPreset('front')"
+            >
+                FRONT
+            </button>
+
+            <button
+                id="viewRight"
+                onclick="setCameraPreset('right')"
+            >
+                RIGHT
+            </button>
+
+            <button
+                id="viewIso"
+                class="active"
+                onclick="setCameraPreset('iso')"
+            >
+                ISO
+            </button>
+
+            <button
+                onclick="fitCameraToToolpath()"
+            >
+                FIT
+            </button>
+
+        </div>
+
+
+        <!-- AXIS GIZMO -->
+
+        <canvas
+            id="axisGizmo"
+            width="105"
+            height="105"
+        ></canvas>
+
+
+        <!-- CAMERA HUD -->
+
+        <div id="viewportHud">
+
+            <span id="viewNameHud">
+                ISO VIEW
+            </span>
+
+            <span id="cameraDistanceHud">
+                Distance: 600
+            </span>
+
+            <span id="cameraHelpHud">
+                LMB Rotate • RMB Pan • Wheel Zoom
+            </span>
+
+        </div>
+
+
+        <!-- SIMULATION TOOLBAR -->
+
         <div id="simulationToolbar">
 
             <button onclick="startStream()">
@@ -1502,6 +1718,8 @@ G0 Z5</textarea>
 
         </div>
 
+
+        <!-- PROGRESS -->
 
         <div id="progressPanel">
 
@@ -1577,17 +1795,41 @@ const camera =
         10000
     );
 
-camera.position.set(
+
+/*
+   CNC coordinates are treated as:
+
+   X = left/right
+   Y = front/back
+   Z = vertical
+
+   This makes TOP / FRONT / RIGHT behave
+   like normal CNC views.
+*/
+
+camera.up.set(
     0,
-    -600,
-    200
+    0,
+    1
 );
 
-camera.lookAt(
-    0,
-    0,
-    0
+
+camera.position.set(
+    350,
+    -350,
+    250
 );
+
+
+const target =
+    new THREE.Vector3(
+        0,
+        0,
+        0
+    );
+
+
+camera.lookAt(target);
 
 
 const renderer =
@@ -1595,6 +1837,14 @@ const renderer =
         canvas,
         antialias: true
     });
+
+
+renderer.setPixelRatio(
+    Math.min(
+        window.devicePixelRatio || 1,
+        2
+    )
+);
 
 
 function resizeRenderer() {
@@ -1605,7 +1855,10 @@ function resizeRenderer() {
     const height =
         viewport.clientHeight;
 
-    if (width <= 0 || height <= 0) {
+    if (
+        width <= 0 ||
+        height <= 0
+    ) {
         return;
     }
 
@@ -1623,6 +1876,7 @@ function resizeRenderer() {
 }
 
 resizeRenderer();
+
 
 window.addEventListener(
     "resize",
@@ -1665,6 +1919,91 @@ const lineMaterial =
     });
 
 
+function disposeObject(object) {
+
+    if (!object) {
+        return;
+    }
+
+
+    object.traverse(
+        child => {
+
+            if (child.geometry) {
+                child.geometry.dispose();
+            }
+
+            if (child.material) {
+
+                if (
+                    Array.isArray(
+                        child.material
+                    )
+                ) {
+
+                    child.material.forEach(
+                        m => {
+
+                            if (m.map) {
+                                m.map.dispose();
+                            }
+
+                            m.dispose();
+
+                        }
+                    );
+
+                }
+
+                else {
+
+                    if (
+                        child.material.map
+                    ) {
+                        child.material.map.dispose();
+                    }
+
+                    child.material.dispose();
+
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+function clearGridLabels() {
+
+    gridLabels.forEach(
+        l => {
+
+            scene.remove(l);
+
+            if (
+                l.material
+            ) {
+
+                if (
+                    l.material.map
+                ) {
+                    l.material.map.dispose();
+                }
+
+                l.material.dispose();
+
+            }
+
+        }
+    );
+
+    gridLabels = [];
+
+}
+
+
 function buildGrid() {
 
     const showLabels =
@@ -1677,8 +2016,17 @@ function buildGrid() {
     clearGridLabels();
 
     if (gridGroup) {
-        scene.remove(gridGroup);
+
+        scene.remove(
+            gridGroup
+        );
+
+        disposeObject(
+            gridGroup
+        );
+
     }
+
 
     gridGroup =
         new THREE.Group();
@@ -1717,9 +2065,11 @@ function buildGrid() {
             0x222222
         );
 
+
     grid.rotateX(
         Math.PI / 2
     );
+
 
     gridGroup.add(grid);
 
@@ -1743,6 +2093,7 @@ function buildGrid() {
                 )
             );
 
+
         const labelOffset = 0;
 
 
@@ -1758,9 +2109,11 @@ function buildGrid() {
                 continue;
             }
 
+
             const x =
                 -half +
                 i * spacing;
+
 
             if (
                 Math.abs(x) <
@@ -1768,6 +2121,7 @@ function buildGrid() {
             ) {
                 continue;
             }
+
 
             makeTextSprite(
                 x.toFixed(0),
@@ -1793,9 +2147,11 @@ function buildGrid() {
                 continue;
             }
 
+
             const y =
                 -half +
                 i * spacing;
+
 
             if (
                 Math.abs(y) <
@@ -1803,6 +2159,7 @@ function buildGrid() {
             ) {
                 continue;
             }
+
 
             makeTextSprite(
                 y.toFixed(0),
@@ -1843,6 +2200,7 @@ function buildGrid() {
         )
     );
 
+
     gridGroup.add(
         makeLine(
             new THREE.Vector3(
@@ -1861,6 +2219,7 @@ function buildGrid() {
 
     const tickLength = 2;
 
+
     for (
         let i = 0;
         i <= divisions;
@@ -1871,12 +2230,14 @@ function buildGrid() {
             -half +
             i * spacing;
 
+
         if (
             Math.abs(pos) <
             0.0001
         ) {
             continue;
         }
+
 
         gridGroup.add(
             makeLine(
@@ -1892,6 +2253,7 @@ function buildGrid() {
                 )
             )
         );
+
 
         gridGroup.add(
             makeLine(
@@ -1925,6 +2287,7 @@ function makeLine(a, b) {
                 b
             ]);
 
+
     return new THREE.Line(
         geo,
         lineMaterial
@@ -1940,17 +2303,6 @@ function makeLine(a, b) {
 let gridLabels = [];
 
 
-function clearGridLabels() {
-
-    gridLabels.forEach(
-        l => scene.remove(l)
-    );
-
-    gridLabels = [];
-
-}
-
-
 function makeTextSprite(
     text,
     position
@@ -1960,6 +2312,7 @@ function makeTextSprite(
         document.createElement("canvas");
 
     const size = 256;
+
 
     labelCanvas.width =
         size;
@@ -1971,12 +2324,14 @@ function makeTextSprite(
     const ctx =
         labelCanvas.getContext("2d");
 
+
     ctx.clearRect(
         0,
         0,
         size,
         size
     );
+
 
     ctx.fillStyle =
         "#aaaaaa";
@@ -1990,6 +2345,7 @@ function makeTextSprite(
     ctx.textBaseline =
         "middle";
 
+
     ctx.fillText(
         text,
         size / 2,
@@ -2001,6 +2357,7 @@ function makeTextSprite(
         new THREE.CanvasTexture(
             labelCanvas
         );
+
 
     texture.minFilter =
         THREE.LinearFilter;
@@ -2016,11 +2373,13 @@ function makeTextSprite(
     const sprite =
         new THREE.Sprite(mat);
 
+
     sprite.scale.set(
         20,
         20,
         1
     );
+
 
     sprite.position.copy(
         position
@@ -2045,6 +2404,7 @@ document
         buildGrid
     );
 
+
 document
     .getElementById("showLabels")
     .addEventListener(
@@ -2052,12 +2412,14 @@ document
         buildGrid
     );
 
+
 document
     .getElementById("gridSize")
     .addEventListener(
         "input",
         buildGrid
     );
+
 
 document
     .getElementById("gridDivs")
@@ -2068,15 +2430,590 @@ document
 
 
 /* =========================================================
+   CAMERA SYSTEM
+   ========================================================= */
+
+let cameraAnimation = null;
+
+let currentViewName =
+    "ISO VIEW";
+
+
+const viewNameHud =
+    document.getElementById(
+        "viewNameHud"
+    );
+
+
+const cameraDistanceHud =
+    document.getElementById(
+        "cameraDistanceHud"
+    );
+
+
+function updateViewButtons(
+    active
+) {
+
+    [
+        "viewTop",
+        "viewFront",
+        "viewRight",
+        "viewIso"
+    ].forEach(
+        id => {
+
+            const button =
+                document.getElementById(id);
+
+            if (!button) {
+                return;
+            }
+
+            button.classList.toggle(
+                "active",
+                id ===
+                "view" +
+                active.charAt(0).toUpperCase() +
+                active.slice(1)
+            );
+
+        }
+    );
+
+}
+
+
+function animateCamera(
+    newPosition,
+    newTarget,
+    newUp,
+    duration = 350
+) {
+
+    cameraAnimation = {
+
+        startPosition:
+            camera.position.clone(),
+
+        endPosition:
+            newPosition.clone(),
+
+        startTarget:
+            target.clone(),
+
+        endTarget:
+            newTarget.clone(),
+
+        startUp:
+            camera.up.clone(),
+
+        endUp:
+            newUp.clone(),
+
+        startTime:
+            performance.now(),
+
+        duration
+
+    };
+
+}
+
+
+function updateCameraAnimation(
+    now
+) {
+
+    if (!cameraAnimation) {
+        return;
+    }
+
+
+    const a =
+        cameraAnimation;
+
+
+    let p =
+        (
+            now -
+            a.startTime
+        ) /
+        a.duration;
+
+
+    p =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                p
+            )
+        );
+
+
+    /*
+       Smoothstep easing.
+    */
+
+    const eased =
+        p * p *
+        (3 - 2 * p);
+
+
+    camera.position.lerpVectors(
+        a.startPosition,
+        a.endPosition,
+        eased
+    );
+
+
+    target.lerpVectors(
+        a.startTarget,
+        a.endTarget,
+        eased
+    );
+
+
+    camera.up.lerpVectors(
+        a.startUp,
+        a.endUp,
+        eased
+    );
+
+
+    camera.up.normalize();
+
+
+    camera.lookAt(
+        target
+    );
+
+
+    if (p >= 1) {
+
+        camera.position.copy(
+            a.endPosition
+        );
+
+        target.copy(
+            a.endTarget
+        );
+
+        camera.up.copy(
+            a.endUp
+        );
+
+        camera.lookAt(
+            target
+        );
+
+        cameraAnimation = null;
+
+    }
+
+}
+
+
+function setCameraPreset(
+    view
+) {
+
+    const centre =
+        getToolpathCentre();
+
+
+    let direction;
+    let up;
+
+
+    switch (view) {
+
+        case "top":
+
+            /*
+               Looking straight down Z.
+            */
+
+            direction =
+                new THREE.Vector3(
+                    0,
+                    0,
+                    1
+                );
+
+            up =
+                new THREE.Vector3(
+                    0,
+                    1,
+                    0
+                );
+
+            currentViewName =
+                "TOP VIEW";
+
+            break;
+
+
+        case "front":
+
+            /*
+               Looking from -Y
+               toward the work.
+            */
+
+            direction =
+                new THREE.Vector3(
+                    0,
+                    -1,
+                    0
+                );
+
+            up =
+                new THREE.Vector3(
+                    0,
+                    0,
+                    1
+                );
+
+            currentViewName =
+                "FRONT VIEW";
+
+            break;
+
+
+        case "right":
+
+            /*
+               Looking from +X
+               toward the work.
+            */
+
+            direction =
+                new THREE.Vector3(
+                    1,
+                    0,
+                    0
+                );
+
+            up =
+                new THREE.Vector3(
+                    0,
+                    0,
+                    1
+                );
+
+            currentViewName =
+                "RIGHT VIEW";
+
+            break;
+
+
+        default:
+
+            /*
+               Standard CNC ISO view.
+            */
+
+            direction =
+                new THREE.Vector3(
+                    0.70,
+                    -0.70,
+                    0.55
+                )
+                .normalize();
+
+            up =
+                new THREE.Vector3(
+                    0,
+                    0,
+                    1
+                );
+
+            currentViewName =
+                "ISO VIEW";
+
+            break;
+
+    }
+
+
+    const distance =
+        Math.max(
+            150,
+            camera.position
+                .distanceTo(target)
+        );
+
+
+    const newPosition =
+        centre.clone()
+            .add(
+                direction
+                    .multiplyScalar(
+                        distance
+                    )
+            );
+
+
+    animateCamera(
+        newPosition,
+        centre,
+        up,
+        300
+    );
+
+
+    updateViewButtons(
+        view
+    );
+
+}
+
+
+/* =========================================================
+   TOOLPATH BOUNDS
+   ========================================================= */
+
+function getToolpathBounds() {
+
+    const box =
+        new THREE.Box3();
+
+
+    if (
+        !segments.length
+    ) {
+
+        box.expandByPoint(
+            new THREE.Vector3(
+                0,
+                0,
+                0
+            )
+        );
+
+        return box;
+
+    }
+
+
+    segments.forEach(
+        s => {
+
+            box.expandByPoint(
+                new THREE.Vector3(
+                    s.from.x,
+                    s.from.y,
+                    s.from.z
+                )
+            );
+
+            box.expandByPoint(
+                new THREE.Vector3(
+                    s.to.x,
+                    s.to.y,
+                    s.to.z
+                )
+            );
+
+        }
+    );
+
+
+    return box;
+
+}
+
+
+function getToolpathCentre() {
+
+    const box =
+        getToolpathBounds();
+
+
+    if (box.isEmpty()) {
+
+        return new THREE.Vector3(
+            0,
+            0,
+            0
+        );
+
+    }
+
+
+    return box.getCenter(
+        new THREE.Vector3()
+    );
+
+}
+
+
+/* =========================================================
+   FIT CAMERA
+   ========================================================= */
+
+function fitCameraToToolpath() {
+
+    if (
+        !segments.length
+    ) {
+        return;
+    }
+
+
+    const box =
+        getToolpathBounds();
+
+
+    const centre =
+        box.getCenter(
+            new THREE.Vector3()
+        );
+
+
+    const size =
+        box.getSize(
+            new THREE.Vector3()
+        );
+
+
+    const maxSize =
+        Math.max(
+            size.x,
+            size.y,
+            size.z,
+            10
+        );
+
+
+    /*
+       Add generous padding so the
+       toolpath does not touch the edge.
+    */
+
+    const fov =
+        camera.fov *
+        Math.PI /
+        180;
+
+
+    const aspect =
+        Math.max(
+            camera.aspect,
+            0.1
+        );
+
+
+    const horizontalFov =
+        2 *
+        Math.atan(
+            Math.tan(fov / 2) *
+            aspect
+        );
+
+
+    const verticalDistance =
+        (
+            maxSize * 0.72
+        ) /
+        Math.tan(
+            fov / 2
+        );
+
+
+    const horizontalDistance =
+        (
+            maxSize * 0.72
+        ) /
+        Math.tan(
+            horizontalFov / 2
+        );
+
+
+    const distance =
+        Math.max(
+            verticalDistance,
+            horizontalDistance,
+            100
+        );
+
+
+    let direction =
+        camera.position
+            .clone()
+            .sub(target);
+
+
+    if (
+        direction.lengthSq() <
+        0.000001
+    ) {
+
+        direction.set(
+            0.70,
+            -0.70,
+            0.55
+        );
+
+    }
+
+
+    direction.normalize();
+
+
+    const newPosition =
+        centre.clone()
+            .add(
+                direction
+                    .multiplyScalar(
+                        distance
+                    )
+            );
+
+
+    animateCamera(
+        newPosition,
+        centre,
+        camera.up.clone().normalize(),
+        350
+    );
+
+
+    currentViewName =
+        "FIT";
+
+
+    [
+        "viewTop",
+        "viewFront",
+        "viewRight",
+        "viewIso"
+    ].forEach(
+        id => {
+
+            document
+                .getElementById(id)
+                ?.classList.remove(
+                    "active"
+                );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    CAMERA CONTROLS
    ========================================================= */
 
-const target =
-    new THREE.Vector3();
-
 let drag = false;
+
 let px = 0;
 let py = 0;
+
 let mode = null;
 
 
@@ -2084,10 +3021,18 @@ canvas.addEventListener(
     "mousedown",
     e => {
 
+        cameraAnimation = null;
+
+
         drag = true;
 
-        px = e.clientX;
-        py = e.clientY;
+
+        px =
+            e.clientX;
+
+        py =
+            e.clientY;
+
 
         mode =
             e.button === 0
@@ -2102,10 +3047,13 @@ canvas.addEventListener(
 );
 
 
-canvas.addEventListener(
+window.addEventListener(
     "mouseup",
     () => {
+
         drag = false;
+        mode = null;
+
     }
 );
 
@@ -2113,7 +3061,10 @@ canvas.addEventListener(
 canvas.addEventListener(
     "mouseleave",
     () => {
+
         drag = false;
+        mode = null;
+
     }
 );
 
@@ -2131,60 +3082,150 @@ canvas.addEventListener(
 
 
         const dx =
-            e.clientX - px;
+            e.clientX -
+            px;
 
         const dy =
-            e.clientY - py;
+            e.clientY -
+            py;
 
 
-        px = e.clientX;
-        py = e.clientY;
+        px =
+            e.clientX;
+
+        py =
+            e.clientY;
 
 
         if (
             mode === "rotate"
         ) {
 
-            const v =
+            /*
+               Orbit around target.
+
+               Horizontal rotation is around
+               the Z axis because Z is vertical.
+            */
+
+            const offset =
                 camera.position
                     .clone()
                     .sub(target);
 
 
-            v.applyAxisAngle(
+            const distance =
+                offset.length();
+
+
+            if (
+                distance <= 0.001
+            ) {
+                return;
+            }
+
+
+            /*
+               Horizontal orbit.
+            */
+
+            offset.applyAxisAngle(
                 new THREE.Vector3(
                     0,
-                    1,
-                    0
+                    0,
+                    1
                 ),
                 -dx * 0.005
             );
 
 
-            const right =
-                new THREE.Vector3()
-                    .crossVectors(
-                        v,
-                        new THREE.Vector3(
-                            0,
-                            1,
-                            0
-                        )
-                    )
-                    .normalize();
+            /*
+               Vertical orbit.
+
+               Rotate around a local horizontal
+               axis, while avoiding the camera
+               flipping over the top/bottom.
+            */
+
+            const horizontal =
+                new THREE.Vector3(
+                    offset.y,
+                    -offset.x,
+                    0
+                );
 
 
-            v.applyAxisAngle(
-                right,
-                dy * 0.005
-            );
+            if (
+                horizontal.lengthSq() >
+                0.000001
+            ) {
+
+                horizontal.normalize();
+
+
+                offset.applyAxisAngle(
+                    horizontal,
+                    dy * 0.005
+                );
+
+            }
+
+
+            /*
+               Prevent the camera from going
+               upside-down through the poles.
+            */
+
+            const minZ =
+                distance * 0.08;
+
+
+            if (
+                offset.z >
+                distance - minZ
+            ) {
+
+                offset.z =
+                    distance - minZ;
+
+            }
+
+
+            if (
+                offset.z <
+                -distance + minZ
+            ) {
+
+                offset.z =
+                    -distance + minZ;
+
+            }
 
 
             camera.position.copy(
-                v.add(target)
+                target.clone().add(offset)
             );
 
-            camera.lookAt(target);
+
+            camera.up.set(
+                0,
+                0,
+                1
+            );
+
+
+            camera.lookAt(
+                target
+            );
+
+
+            currentViewName =
+                "CUSTOM VIEW";
+
+
+            updateViewButtons(
+                ""
+            );
 
         }
 
@@ -2193,10 +3234,21 @@ canvas.addEventListener(
             mode === "pan"
         ) {
 
-            const panSpeed = 10;
+            const distance =
+                Math.max(
+                    10,
+                    camera.position
+                        .distanceTo(target)
+                );
+
+
+            const panSpeed =
+                distance * 0.0015;
+
 
             const camDir =
                 new THREE.Vector3();
+
 
             camera.getWorldDirection(
                 camDir
@@ -2206,8 +3258,8 @@ canvas.addEventListener(
             const right =
                 new THREE.Vector3()
                     .crossVectors(
-                        camera.up,
-                        camDir
+                        camDir,
+                        camera.up
                     )
                     .normalize();
 
@@ -2218,39 +3270,56 @@ canvas.addEventListener(
                     .normalize();
 
 
+            const panX =
+                -dx *
+                panSpeed;
+
+
+            const panY =
+                dy *
+                panSpeed;
+
+
             camera.position
                 .addScaledVector(
                     right,
-                    dx *
-                    panSpeed *
-                    0.01
+                    panX
                 );
+
 
             camera.position
                 .addScaledVector(
                     up,
-                    dy *
-                    panSpeed *
-                    0.01
+                    panY
                 );
 
 
-            target.addScaledVector(
-                right,
-                dx *
-                panSpeed *
-                0.01
+            target
+                .addScaledVector(
+                    right,
+                    panX
+                );
+
+
+            target
+                .addScaledVector(
+                    up,
+                    panY
+                );
+
+
+            camera.lookAt(
+                target
             );
 
-            target.addScaledVector(
-                up,
-                dy *
-                panSpeed *
-                0.01
+
+            currentViewName =
+                "CUSTOM VIEW";
+
+
+            updateViewButtons(
+                ""
             );
-
-
-            camera.lookAt(target);
 
         }
 
@@ -2270,31 +3339,67 @@ canvas.addEventListener(
 
         e.preventDefault();
 
+
+        cameraAnimation = null;
+
+
+        const currentDistance =
+            camera.position
+                .distanceTo(target);
+
+
         const zoomFactor =
             e.deltaY < 0
-                ? 0.9
-                : 1.1;
+                ? 0.88
+                : 1.14;
 
 
-        const dir =
+        const newDistance =
+            Math.max(
+                5,
+                Math.min(
+                    10000,
+                    currentDistance *
+                    zoomFactor
+                )
+            );
+
+
+        const direction =
             camera.position
                 .clone()
                 .sub(target)
-                .multiplyScalar(
-                    zoomFactor
-                );
+                .normalize();
 
 
         camera.position.copy(
-            target
-                .clone()
-                .add(dir)
+            target.clone()
+                .add(
+                    direction
+                        .multiplyScalar(
+                            newDistance
+                        )
+                )
         );
 
-        camera.lookAt(target);
+
+        camera.lookAt(
+            target
+        );
+
+
+        currentViewName =
+            "CUSTOM VIEW";
+
+
+        updateViewButtons(
+            ""
+        );
 
     },
-    { passive: false }
+    {
+        passive: false
+    }
 );
 
 
@@ -2340,7 +3445,11 @@ let currentTool =
 function buildTool(opt) {
 
     if (tool) {
+
         scene.remove(tool);
+
+        disposeObject(tool);
+
     }
 
 
@@ -2361,6 +3470,7 @@ function buildTool(opt) {
                 16
             );
 
+
         geo.translate(
             0,
             -opt.height / 2,
@@ -2377,6 +3487,7 @@ function buildTool(opt) {
 
         tool.rotation.x =
             -Math.PI / 2;
+
 
         tool.position.z =
             0;
@@ -2396,6 +3507,7 @@ function buildTool(opt) {
                 16
             );
 
+
         geo.translate(
             0,
             -opt.height / 2,
@@ -2412,6 +3524,7 @@ function buildTool(opt) {
 
         tool.rotation.x =
             -Math.PI / 2;
+
 
         tool.position.z =
             0;
@@ -2472,6 +3585,7 @@ function buildTool(opt) {
         group.rotation.x =
             Math.PI / 2;
 
+
         group.position.z =
             0;
 
@@ -2496,15 +3610,18 @@ const typeSel =
         "toolType"
     );
 
+
 const radInp =
     document.getElementById(
         "toolRadius"
     );
 
+
 const hInp =
     document.getElementById(
         "toolHeight"
     );
+
 
 const colInp =
     document.getElementById(
@@ -2517,25 +3634,36 @@ function syncUI(opt) {
     if (
         opt.type === "cylinder"
     ) {
-        typeSel.value = "flat";
+
+        typeSel.value =
+            "flat";
+
     }
 
     else if (
         opt.type === "sphere"
     ) {
-        typeSel.value = "ball";
+
+        typeSel.value =
+            "ball";
+
     }
 
     else {
-        typeSel.value = opt.type;
+
+        typeSel.value =
+            opt.type;
+
     }
 
 
     radInp.value =
         opt.radius;
 
+
     hInp.value =
         opt.height ?? 0;
+
 
     colInp.value =
         "#" +
@@ -2556,10 +3684,12 @@ function updateFromUI() {
             radInp.value
         );
 
+
     currentTool.height =
         parseFloat(
             hInp.value
         );
+
 
     currentTool.color =
         parseInt(
@@ -2568,6 +3698,7 @@ function updateFromUI() {
                 "0x"
             )
         );
+
 
     buildTool(
         currentTool
@@ -2611,9 +3742,11 @@ document
                             ]
                         );
 
+
                     syncUI(
                         currentTool
                     );
+
 
                     buildTool(
                         currentTool
@@ -2638,8 +3771,10 @@ buildTool(currentTool);
 let doneGroup =
     new THREE.Group();
 
+
 let todoGroup =
     new THREE.Group();
+
 
 let activePathLine =
     null;
@@ -2664,13 +3799,28 @@ function clearActivePath() {
             activePathLine
         );
 
-        activePathLine
-            .geometry
-            .dispose();
 
-        activePathLine
-            .material
-            .dispose();
+        if (
+            activePathLine.geometry
+        ) {
+
+            activePathLine
+                .geometry
+                .dispose();
+
+        }
+
+
+        if (
+            activePathLine.material
+        ) {
+
+            activePathLine
+                .material
+                .dispose();
+
+        }
+
 
         activePathLine =
             null;
@@ -2707,6 +3857,7 @@ function updateActivePath(
         const p =
             batch.points[i];
 
+
         points.push(
             new THREE.Vector3(
                 p.x,
@@ -2722,6 +3873,7 @@ function updateActivePath(
         batch.points[
             segmentIndex
         ];
+
 
     const b =
         batch.points[
@@ -2753,7 +3905,9 @@ function updateActivePath(
 
     const geometry =
         new THREE.BufferGeometry()
-            .setFromPoints(points);
+            .setFromPoints(
+                points
+            );
 
 
     const material =
@@ -2785,18 +3939,34 @@ function updateActivePath(
 
 function clearGroups() {
 
-    scene.remove(doneGroup);
-    scene.remove(todoGroup);
+    scene.remove(
+        doneGroup
+    );
+
+    scene.remove(
+        todoGroup
+    );
+
+
+    disposeObject(
+        doneGroup
+    );
+
+    disposeObject(
+        todoGroup
+    );
 
 
     doneGroup =
         new THREE.Group();
+
 
     todoGroup =
         new THREE.Group();
 
 
     scene.add(doneGroup);
+
     scene.add(todoGroup);
 
 }
@@ -2945,9 +4115,11 @@ function parseGcode(
                         target.x -
                         pos.x;
 
+
                     const dy =
                         target.y -
                         pos.y;
+
 
                     const dz =
                         target.z -
@@ -3063,6 +4235,11 @@ function parseGcode(
         );
 
 
+    /*
+       Normalise Z so the lowest point
+       begins at the selected offset.
+    */
+
     let minZ =
         Infinity;
 
@@ -3103,6 +4280,7 @@ function parseGcode(
                     minZ +
                     zOffset;
 
+
                 s.to.z =
                     s.to.z -
                     minZ +
@@ -3121,15 +4299,21 @@ function parseGcode(
    ========================================================= */
 
 let idx = 0;
+
 let t = 0;
+
 let running = false;
+
 let feed = 100;
 
 let batchedSegments = [];
 
 let totalPathDistance = 0;
+
 let simulatedDistance = 0;
+
 let distanceIntoSegment = 0;
+
 let currentSegmentIndex = 0;
 
 
@@ -3149,6 +4333,7 @@ let scrubbing = false;
 function buildTodoPath() {
 
     batchedSegments = [];
+
 
     let currentBatch = null;
 
@@ -3178,6 +4363,7 @@ function buildTodoPath() {
                     distances: [
                         s.distance ||
                         Math.hypot(
+
                             s.to.x -
                             s.from.x,
 
@@ -3186,12 +4372,14 @@ function buildTodoPath() {
 
                             s.to.z -
                             s.from.z
+
                         )
                     ],
 
                     totalDistance:
                         s.distance ||
                         Math.hypot(
+
                             s.to.x -
                             s.from.x,
 
@@ -3200,6 +4388,7 @@ function buildTodoPath() {
 
                             s.to.z -
                             s.from.z
+
                         )
 
                 };
@@ -3234,13 +4423,16 @@ function buildTodoPath() {
                     s.to
                 );
 
+
                 currentBatch.lines.push(
                     s.line
                 );
 
+
                 currentBatch.distances.push(
                     d
                 );
+
 
                 currentBatch.totalDistance +=
                     d;
@@ -3260,10 +4452,55 @@ function buildTodoPath() {
         );
 
 
-    todoGroup.clear();
-    doneGroup.clear();
-
     clearActivePath();
+
+
+    /*
+       Dispose existing path geometry
+       before rebuilding.
+    */
+
+    todoGroup.children.forEach(
+        child => {
+
+            if (
+                child.geometry
+            ) {
+                child.geometry.dispose();
+            }
+
+            if (
+                child.material
+            ) {
+                child.material.dispose();
+            }
+
+        }
+    );
+
+
+    doneGroup.children.forEach(
+        child => {
+
+            if (
+                child.geometry
+            ) {
+                child.geometry.dispose();
+            }
+
+            if (
+                child.material
+            ) {
+                child.material.dispose();
+            }
+
+        }
+    );
+
+
+    todoGroup.clear();
+
+    doneGroup.clear();
 
 
     batchedSegments.forEach(
@@ -3322,25 +4559,30 @@ const gcode =
         "gcode"
     );
 
+
 const lineNumbers =
     document.getElementById(
         "lineNumbers"
     );
+
 
 const syntaxLayer =
     document.getElementById(
         "syntaxLayer"
     );
 
+
 const gcodeSearch =
     document.getElementById(
         "gcodeSearch"
     );
 
+
 const searchCount =
     document.getElementById(
         "searchCount"
     );
+
 
 const editorLineInfo =
     document.getElementById(
@@ -3351,28 +4593,35 @@ const editorLineInfo =
 function escapeHTML(str) {
 
     return str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
-
-/*
-    Syntax highlighting is tokenised directly from
-    the raw G-code line.
-
-    This avoids the common problem where later
-    regex replacements accidentally match the
-    HTML tags inserted by earlier replacements.
-*/
 
 function highlightGcodeLine(line) {
 
     const commentIndex =
         line.indexOf(";");
+
 
     let code =
         commentIndex >= 0
@@ -3381,6 +4630,7 @@ function highlightGcodeLine(line) {
                 commentIndex
             )
             : line;
+
 
     const comment =
         commentIndex >= 0
@@ -3395,45 +4645,17 @@ function highlightGcodeLine(line) {
 
 
     let result = "";
+
     let lastIndex = 0;
-
-
-    code.replace(
-        tokenRegex,
-        (
-            match,
-            command,
-            axis,
-            feedToken,
-            spindleToken,
-            number,
-            offset
-        ) => {
-
-            const index =
-                arguments.length > 6
-                    ? offset
-                    : 0;
-
-            return match;
-
-        }
-    );
-
-
-    /*
-       Use exec manually so the source position
-       remains reliable.
-    */
-
-    tokenRegex.lastIndex = 0;
 
     let match;
 
 
     while (
-        (match =
-            tokenRegex.exec(code)) !== null
+        (
+            match =
+            tokenRegex.exec(code)
+        ) !== null
     ) {
 
         result +=
@@ -3447,6 +4669,7 @@ function highlightGcodeLine(line) {
 
         const token =
             match[0];
+
 
         let cls =
             "gcode-number";
@@ -3511,7 +4734,9 @@ function updateSyntaxLayer() {
 
     syntaxLayer.innerHTML =
         lines
-            .map(highlightGcodeLine)
+            .map(
+                highlightGcodeLine
+            )
             .join("\n");
 
 }
@@ -3584,18 +4809,6 @@ function getCursorLine() {
 }
 
 
-function currentEditorLine() {
-
-    return getCursorLine();
-
-}
-
-
-/*
-   Keep syntax and textarea scrolling perfectly
-   aligned.
-*/
-
 function syncEditorScroll() {
 
     syntaxLayer.style.transform =
@@ -3608,10 +4821,6 @@ function syncEditorScroll() {
 
 }
 
-
-/*
-   Scroll a requested line into view.
-*/
 
 function scrollEditorLineIntoView(line) {
 
@@ -3695,12 +4904,19 @@ function jumpToGcodeLine(line) {
     );
 
 
-    updateActiveLineNumber(line);
+    updateActiveLineNumber(
+        line
+    );
 
-    scrollEditorLineIntoView(line);
+
+    scrollEditorLineIntoView(
+        line
+    );
 
 
-    jumpSimulatorToLine(line);
+    jumpSimulatorToLine(
+        line
+    );
 
 }
 
@@ -3731,13 +4947,15 @@ function jumpSimulatorToLine(line) {
         ) {
 
             found = true;
+
             break;
 
         }
 
 
         distanceBefore +=
-            segments[i].distance || 0;
+            segments[i].distance ||
+            0;
 
     }
 
@@ -3778,7 +4996,7 @@ function refreshGcodeEditor() {
 
 
 /* =========================================================
-   EDITOR CURSOR / SCROLL EVENTS
+   EDITOR EVENTS
    ========================================================= */
 
 [
@@ -3845,6 +5063,7 @@ function updateSearchResults() {
     const source =
         gcode.value.toLowerCase();
 
+
     const needle =
         query.toLowerCase();
 
@@ -3853,14 +5072,17 @@ function updateSearchResults() {
 
 
     while (
-        (pos =
+        (
+            pos =
             source.indexOf(
                 needle,
                 pos
-            )) !== -1
+            )
+        ) !== -1
     ) {
 
         searchMatches.push(pos);
+
 
         pos +=
             Math.max(
@@ -3871,7 +5093,9 @@ function updateSearchResults() {
     }
 
 
-    if (searchMatches.length) {
+    if (
+        searchMatches.length
+    ) {
 
         searchIndex = 0;
 
@@ -3895,10 +5119,12 @@ function selectSearchMatch() {
         searchIndex < 0 ||
         !searchMatches.length
     ) {
+
         searchCount.textContent =
             "0/0";
 
         return;
+
     }
 
 
@@ -3928,9 +5154,14 @@ function selectSearchMatch() {
         getCursorLine();
 
 
-    updateActiveLineNumber(line);
+    updateActiveLineNumber(
+        line
+    );
 
-    scrollEditorLineIntoView(line);
+
+    scrollEditorLineIntoView(
+        line
+    );
 
 
     searchCount.textContent =
@@ -3955,11 +5186,14 @@ function findNext() {
 
     searchIndex++;
 
+
     if (
         searchIndex >=
         searchMatches.length
     ) {
+
         searchIndex = 0;
+
     }
 
 
@@ -3983,11 +5217,14 @@ function findPrevious() {
 
     searchIndex--;
 
+
     if (
         searchIndex < 0
     ) {
+
         searchIndex =
             searchMatches.length - 1;
+
     }
 
 
@@ -4012,23 +5249,30 @@ gcodeSearch.addEventListener(
 
             e.preventDefault();
 
+
             if (
                 e.shiftKey
             ) {
+
                 findPrevious();
+
             }
 
             else {
+
                 findNext();
+
             }
 
         }
+
 
         if (
             e.key === "Escape"
         ) {
 
-            gcodeSearch.value = "";
+            gcodeSearch.value =
+                "";
 
             updateSearchResults();
 
@@ -4041,7 +5285,7 @@ gcodeSearch.addEventListener(
 
 
 /*
-   Ctrl+F focuses the G-code search box.
+   Ctrl+F focuses G-code search.
 */
 
 document.addEventListener(
@@ -4069,7 +5313,10 @@ document.addEventListener(
    GCODE LINE HIGHLIGHT
    ========================================================= */
 
-function highlightLine(line) {
+function highlightLine(
+    line,
+    focusEditor = true
+) {
 
     const lines =
         gcode.value.split("\n");
@@ -4103,9 +5350,13 @@ function highlightLine(line) {
     }
 
 
-    ta.focus({
-        preventScroll: true
-    });
+    if (focusEditor) {
+
+        ta.focus({
+            preventScroll: true
+        });
+
+    }
 
 
     ta.setSelectionRange(
@@ -4115,9 +5366,14 @@ function highlightLine(line) {
     );
 
 
-    updateActiveLineNumber(line);
+    updateActiveLineNumber(
+        line
+    );
 
-    scrollEditorLineIntoView(line);
+
+    scrollEditorLineIntoView(
+        line
+    );
 
 }
 
@@ -4194,6 +5450,7 @@ function startStream() {
 
     running = true;
 
+
     statusText.textContent =
         "Running";
 
@@ -4203,6 +5460,7 @@ function startStream() {
 function pauseStream() {
 
     running = false;
+
 
     statusText.textContent =
         "Paused";
@@ -4219,6 +5477,7 @@ const speedSlider =
         "speedSlider"
     );
 
+
 const speedVal =
     document.getElementById(
         "speedVal"
@@ -4233,6 +5492,7 @@ speedSlider.addEventListener(
             parseFloat(
                 speedSlider.value
             );
+
 
         speedVal.textContent =
             feed;
@@ -4259,7 +5519,9 @@ progressSlider.addEventListener(
             progressSlider.max;
 
 
-        setProgress(norm);
+        setProgress(
+            norm
+        );
 
 
         statusText.textContent =
@@ -4313,8 +5575,10 @@ function setProgress(norm) {
 
     let accumulated = 0;
 
+
     let foundBatch =
         batchedSegments.length - 1;
+
 
     let foundSegment = 0;
 
@@ -4337,7 +5601,8 @@ function setProgress(norm) {
             batch.totalDistance
         ) {
 
-            foundBatch = b;
+            foundBatch =
+                b;
 
 
             let batchDistance =
@@ -4374,6 +5639,7 @@ function setProgress(norm) {
                             )
                         );
 
+
                     break;
 
                 }
@@ -4399,11 +5665,14 @@ function setProgress(norm) {
     idx =
         foundBatch;
 
+
     currentSegmentIndex =
         foundSegment;
 
+
     distanceIntoSegment =
         localDistance;
+
 
     simulatedDistance =
         targetDistance;
@@ -4417,6 +5686,7 @@ function setProgress(norm) {
         batch.points[
             currentSegmentIndex
         ];
+
 
     const b =
         batch.points[
@@ -4456,7 +5726,15 @@ function setProgress(norm) {
         `Line: ${line + 1}`;
 
 
-    highlightLine(line);
+    /*
+       Do not steal focus from the editor
+       while the simulator is running.
+    */
+
+    highlightLine(
+        line,
+        true
+    );
 
 
     posText.textContent =
@@ -4564,10 +5842,13 @@ function createLabel(
     const labelCanvas =
         document.createElement("canvas");
 
+
     const size = 128;
+
 
     labelCanvas.width =
         size;
+
 
     labelCanvas.height =
         size;
@@ -4580,11 +5861,14 @@ function createLabel(
     ctx.fillStyle =
         "white";
 
+
     ctx.font =
         "40px Arial";
 
+
     ctx.textAlign =
         "center";
+
 
     ctx.textBaseline =
         "middle";
@@ -4659,6 +5943,316 @@ createLabel(
 
 
 /* =========================================================
+   MINI AXIS GIZMO
+   ========================================================= */
+
+const axisGizmo =
+    document.getElementById(
+        "axisGizmo"
+    );
+
+
+const gizmoRenderer =
+    new THREE.WebGLRenderer({
+        canvas: axisGizmo,
+        antialias: true,
+        alpha: true
+    });
+
+
+gizmoRenderer.setPixelRatio(
+    Math.min(
+        window.devicePixelRatio || 1,
+        2
+    )
+);
+
+
+gizmoRenderer.setSize(
+    105,
+    105,
+    false
+);
+
+
+gizmoRenderer.setClearColor(
+    0x000000,
+    0
+);
+
+
+const gizmoScene =
+    new THREE.Scene();
+
+
+const gizmoCamera =
+    new THREE.PerspectiveCamera(
+        30,
+        1,
+        0.1,
+        100
+    );
+
+
+gizmoCamera.up.set(
+    0,
+    0,
+    1
+);
+
+
+const gizmoAxes =
+    new THREE.Group();
+
+
+function makeGizmoAxis(
+    direction,
+    color,
+    label
+) {
+
+    const group =
+        new THREE.Group();
+
+
+    const geometry =
+        new THREE.BufferGeometry()
+            .setFromPoints([
+
+                new THREE.Vector3(
+                    0,
+                    0,
+                    0
+                ),
+
+                direction
+                    .clone()
+                    .multiplyScalar(
+                        2.8
+                    )
+
+            ]);
+
+
+    const material =
+        new THREE.LineBasicMaterial({
+            color
+        });
+
+
+    group.add(
+        new THREE.Line(
+            geometry,
+            material
+        )
+    );
+
+
+    const labelCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    labelCanvas.width = 128;
+
+    labelCanvas.height = 128;
+
+
+    const ctx =
+        labelCanvas.getContext(
+            "2d"
+        );
+
+
+    ctx.fillStyle =
+        "#ffffff";
+
+
+    ctx.font =
+        "bold 58px Arial";
+
+
+    ctx.textAlign =
+        "center";
+
+
+    ctx.textBaseline =
+        "middle";
+
+
+    ctx.fillText(
+        label,
+        64,
+        64
+    );
+
+
+    const texture =
+        new THREE.CanvasTexture(
+            labelCanvas
+        );
+
+
+    const sprite =
+        new THREE.Sprite(
+            new THREE.SpriteMaterial({
+                map: texture,
+                depthTest: false
+            })
+        );
+
+
+    sprite.scale.set(
+        0.8,
+        0.8,
+        1
+    );
+
+
+    sprite.position.copy(
+        direction
+            .clone()
+            .multiplyScalar(
+                3.25
+            )
+    );
+
+
+    group.add(sprite);
+
+
+    return group;
+
+}
+
+
+gizmoAxes.add(
+    makeGizmoAxis(
+        new THREE.Vector3(
+            1,
+            0,
+            0
+        ),
+        0xff0000,
+        "X"
+    )
+);
+
+
+gizmoAxes.add(
+    makeGizmoAxis(
+        new THREE.Vector3(
+            0,
+            1,
+            0
+        ),
+        0x00ff00,
+        "Y"
+    )
+);
+
+
+gizmoAxes.add(
+    makeGizmoAxis(
+        new THREE.Vector3(
+            0,
+            0,
+            1
+        ),
+        0x0000ff,
+        "Z"
+    )
+);
+
+
+gizmoScene.add(
+    gizmoAxes
+);
+
+
+function renderAxisGizmo() {
+
+    const direction =
+        camera.position
+            .clone()
+            .sub(target)
+            .normalize();
+
+
+    /*
+       The gizmo is a separate miniature
+       representation of the camera orientation.
+
+       Copy the main camera's orientation
+       into the gizmo camera.
+    */
+
+    const gizmoDistance = 10;
+
+
+    gizmoCamera.position.copy(
+        direction
+            .multiplyScalar(
+                gizmoDistance
+            )
+    );
+
+
+    gizmoCamera.up.copy(
+        camera.up
+    );
+
+
+    gizmoCamera.lookAt(
+        0,
+        0,
+        0
+    );
+
+
+    gizmoRenderer.render(
+        gizmoScene,
+        gizmoCamera
+    );
+
+}
+
+
+/* =========================================================
+   CAMERA HUD
+   ========================================================= */
+
+function updateViewportHud() {
+
+    if (
+        viewNameHud
+    ) {
+
+        viewNameHud.textContent =
+            currentViewName;
+
+    }
+
+
+    if (
+        cameraDistanceHud
+    ) {
+
+        const distance =
+            camera.position
+                .distanceTo(target);
+
+
+        cameraDistanceHud.textContent =
+            `Distance: ${distance.toFixed(1)}`;
+
+    }
+
+}
+
+
+/* =========================================================
    ANIMATION LOOP
    ========================================================= */
 
@@ -4680,6 +6274,11 @@ function animate(tn) {
 
     last =
         tn;
+
+
+    updateCameraAnimation(
+        tn
+    );
 
 
     if (
@@ -4761,8 +6360,10 @@ function animate(tn) {
             distanceIntoSegment +=
                 step;
 
+
             simulatedDistance +=
                 step;
+
 
             distanceRemaining -=
                 step;
@@ -4772,6 +6373,7 @@ function animate(tn) {
                 batch.points[
                     currentSegmentIndex
                 ];
+
 
             const b =
                 batch.points[
@@ -4816,7 +6418,10 @@ function animate(tn) {
                 !scrubbing
             ) {
 
-                highlightLine(line);
+                highlightLine(
+                    line,
+                    true
+                );
 
             }
 
@@ -4889,9 +6494,28 @@ function animate(tn) {
                         todoGroup.children.length
                     ) {
 
+                        const old =
+                            todoGroup
+                                .children[0];
+
+
                         todoGroup.remove(
-                            todoGroup.children[0]
+                            old
                         );
+
+
+                        if (
+                            old.geometry
+                        ) {
+                            old.geometry.dispose();
+                        }
+
+
+                        if (
+                            old.material
+                        ) {
+                            old.material.dispose();
+                        }
 
                     }
 
@@ -4900,6 +6524,7 @@ function animate(tn) {
 
 
                     idx++;
+
 
                     currentSegmentIndex =
                         0;
@@ -4934,8 +6559,10 @@ function animate(tn) {
 
             running = false;
 
+
             statusText.textContent =
                 "Complete";
+
 
             progressSlider.value =
                 progressSlider.max;
@@ -4943,6 +6570,11 @@ function animate(tn) {
         }
 
     }
+
+
+    updateViewportHud();
+
+    renderAxisGizmo();
 
 
     renderer.render(
@@ -5005,7 +6637,20 @@ fileInput.addEventListener(
 
                 refreshGcodeEditor();
 
+
                 resetSim();
+
+
+                /*
+                   Automatically frame the newly
+                   loaded toolpath.
+                */
+
+                requestAnimationFrame(
+                    () => {
+                        fitCameraToToolpath();
+                    }
+                );
 
             };
 
@@ -5022,75 +6667,15 @@ fileInput.addEventListener(
 
 function applyZOffsetLive() {
 
-    if (
-        !segments ||
-        segments.length === 0
-    ) {
-        return;
-    }
+    /*
+       Reparse the original G-code instead of
+       repeatedly applying the offset to already
+       modified segments.
+    */
 
-
-    let minZ =
-        Infinity;
-
-
-    segments.forEach(
-        s => {
-
-            minZ =
-                Math.min(
-                    minZ,
-                    s.from.z,
-                    s.to.z
-                );
-
-        }
+    parseGcode(
+        gcode.value
     );
-
-
-    const offset =
-        parseFloat(
-            zOffsetInput.value
-        ) || 0;
-
-
-    const adjustedSegments =
-        segments.map(
-            s => ({
-
-                from: {
-                    x: s.from.x,
-                    y: s.from.y,
-                    z:
-                        s.from.z -
-                        minZ +
-                        offset
-                },
-
-                to: {
-                    x: s.to.x,
-                    y: s.to.y,
-                    z:
-                        s.to.z -
-                        minZ +
-                        offset
-                },
-
-                rapid:
-                    s.rapid,
-
-                line:
-                    s.line,
-
-                distance:
-                    s.distance
-
-            })
-        );
-
-
-    segments =
-        adjustedSegments;
 
 
     buildTodoPath();
@@ -5115,7 +6700,10 @@ function applyZOffsetLive() {
                 Math.floor(
                     t * total
                 ),
-                total - 1
+                Math.max(
+                    0,
+                    total - 1
+                )
             );
 
 
@@ -5129,19 +6717,34 @@ function applyZOffsetLive() {
                 segIdx
             ];
 
+
         const b =
             batch.points[
                 segIdx + 1
             ];
 
 
-        tool.position.lerpVectors(
-            a,
-            b,
-            segT
-        );
+        if (
+            a &&
+            b
+        ) {
+
+            tool.position.lerpVectors(
+                a,
+                b,
+                segT
+            );
+
+        }
 
     }
+
+
+    requestAnimationFrame(
+        () => {
+            fitCameraToToolpath();
+        }
+    );
 
 }
 
@@ -5166,6 +6769,7 @@ function toggleGcode() {
             "gcodePanel"
         );
 
+
     const header =
         document.getElementById(
             "gcodeHeader"
@@ -5183,6 +6787,7 @@ function toggleGcode() {
         panel.style.display =
             "block";
 
+
         header.textContent =
             "▼ G-code Console";
 
@@ -5192,6 +6797,7 @@ function toggleGcode() {
 
         panel.style.display =
             "none";
+
 
         header.textContent =
             "▶ G-code Console";
@@ -5213,25 +6819,37 @@ gcode.addEventListener(
             gcode.value
         );
 
+
         buildTodoPath();
 
 
         idx = 0;
 
+
         currentSegmentIndex =
             0;
+
 
         distanceIntoSegment =
             0;
 
+
         simulatedDistance =
             0;
+
 
         running = false;
 
 
         progressSlider.value =
             0;
+
+
+        tool.position.set(
+            0,
+            0,
+            0
+        );
 
 
         statusText.textContent =
@@ -5244,6 +6862,18 @@ gcode.addEventListener(
 
         refreshGcodeEditor();
 
+
+        /*
+           Fit only after a real G-code edit.
+           Reset does not force the camera angle.
+        */
+
+        requestAnimationFrame(
+            () => {
+                fitCameraToToolpath();
+            }
+        );
+
     }
 );
 
@@ -5254,15 +6884,42 @@ gcode.addEventListener(
 
 buildGrid();
 
+
 parseGcode(
     gcode.value
 );
 
+
 buildTodoPath();
+
 
 refreshGcodeEditor();
 
+
 resetSim();
+
+
+/*
+   Start in ISO view and fit the initial
+   toolpath into the viewport.
+*/
+
+requestAnimationFrame(
+    () => {
+
+        setCameraPreset(
+            "iso"
+        );
+
+        requestAnimationFrame(
+            () => {
+                fitCameraToToolpath();
+            }
+        );
+
+    }
+);
+
 
 animate(last);
 
