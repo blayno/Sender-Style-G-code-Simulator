@@ -8,10 +8,6 @@
 
 <style>
 
-/* =========================================================
-   RESET / GLOBAL
-   ========================================================= */
-
 * {
     box-sizing: border-box;
 }
@@ -30,11 +26,6 @@ body {
     color: #ddd;
 }
 
-
-/* =========================================================
-   MAIN APPLICATION
-   ========================================================= */
-
 #app {
     width: 100%;
     height: 100%;
@@ -49,10 +40,9 @@ body {
 
 #madHatHeader {
     position: fixed;
-    top: 10;
+    top: 10px;
     left: 14%;
     transform: translateX(-50%);
-
     z-index: 100;
 
     height: 62px;
@@ -60,12 +50,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 12px;
 
     padding: 7px 24px;
 
-    background: rgba(17, 17, 17, 0.97);
+    background: rgba(17,17,17,0.97);
 
     border-left: 1px solid #333;
     border-right: 1px solid #333;
@@ -73,8 +62,7 @@ body {
 
     border-radius: 0 0 10px 10px;
 
-    box-shadow:
-        0 4px 16px rgba(0,0,0,0.45);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.45);
 
     pointer-events: none;
 }
@@ -82,9 +70,7 @@ body {
 #madHatHeader img {
     width: 46px;
     height: 46px;
-
     object-fit: contain;
-
     display: block;
 }
 
@@ -92,97 +78,64 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-
     line-height: 1.05;
 }
 
 #madHatBrandName {
     color: #f0a500;
-
     font-size: 19px;
     font-weight: 800;
-
     letter-spacing: 1px;
-
     text-transform: uppercase;
 }
 
 #madHatProductName {
     color: #999;
-
     font-size: 10px;
     font-weight: 700;
-
     letter-spacing: 1.8px;
-
     margin-top: 5px;
 }
 
 
 /* =========================================================
-   MAIN WORKSPACE
+   WORKSPACE
    ========================================================= */
 
 #workspace {
     width: 100%;
     height: 100%;
-
     display: flex;
-
     padding-bottom: 30px;
 }
 
 
 /* =========================================================
-   LEFT CONTROL PANEL
+   LEFT PANEL
    ========================================================= */
 
 #sidePanel {
     width: 390px;
     min-width: 390px;
-
     height: 100%;
 
     background: #181818;
-
     border-right: 1px solid #333;
 
     display: flex;
     flex-direction: column;
 
-    /*
-       IMPORTANT:
-       The left panel scrolls independently
-       from the main 3D viewport.
-    */
     overflow-y: auto;
     overflow-x: hidden;
 
     padding: 78px 15px 20px 15px;
 
-    box-shadow:
-        4px 0 18px rgba(0,0,0,0.25);
+    box-shadow: 4px 0 18px rgba(0,0,0,0.25);
 
     z-index: 30;
-
-    /*
-       Prevent flexbox from shrinking the panel.
-    */
     flex-shrink: 0;
-
-    /*
-       Makes scrolling work correctly inside
-       a flex layout.
-    */
     min-height: 0;
-}
 
-
-/* =========================================================
-   LEFT PANEL SCROLLBAR
-   ========================================================= */
-
-#sidePanel {
     scrollbar-width: thin;
     scrollbar-color: #555 #111;
 }
@@ -198,7 +151,6 @@ body {
 #sidePanel::-webkit-scrollbar-thumb {
     background: #4a4a4a;
     border-radius: 6px;
-
     border: 2px solid #111;
 }
 
@@ -208,62 +160,33 @@ body {
 
 
 /* =========================================================
-   PANEL SECTIONS
+   PANELS
    ========================================================= */
 
 .panelSection {
     width: 100%;
-
     background: #202020;
-
     border: 1px solid #333;
-
     border-radius: 9px;
-
     margin-bottom: 15px;
-
     overflow: hidden;
-
-    /*
-       Prevent sections from being compressed.
-    */
     flex-shrink: 0;
-
-    box-shadow:
-        0 3px 10px rgba(0,0,0,0.20);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.20);
 }
-
-
-/* =========================================================
-   PANEL TITLES
-   ========================================================= */
 
 .panelTitle {
     display: flex;
     align-items: center;
-
     min-height: 44px;
-
     padding: 11px 14px;
-
     background: #252525;
-
     border-bottom: 1px solid #333;
-
     color: #f0a500;
-
     font-size: 13px;
     font-weight: 800;
-
     letter-spacing: 1.1px;
-
     text-transform: uppercase;
 }
-
-
-/* =========================================================
-   PANEL BODY
-   ========================================================= */
 
 .panelBody {
     padding: 15px;
@@ -277,28 +200,22 @@ body {
 .toolOptions {
     display: flex;
     flex-direction: column;
-
     gap: 10px;
 }
 
 .toolOptions label {
     display: flex;
     align-items: center;
-
     gap: 10px;
 
     min-height: 42px;
-
     padding: 10px 11px;
 
     background: #181818;
-
     border: 1px solid #303030;
-
     border-radius: 6px;
 
     cursor: pointer;
-
     font-size: 13px;
 
     transition:
@@ -308,13 +225,11 @@ body {
 
 .toolOptions label:hover {
     background: #242424;
-
     border-color: #555;
 }
 
 .toolOptions input {
     accent-color: #f0a500;
-
     transform: scale(1.1);
 }
 
@@ -325,18 +240,14 @@ body {
 
 .controlGrid {
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 13px;
 }
 
 .controlGroup {
     display: flex;
     flex-direction: column;
-
     gap: 6px;
-
     min-width: 0;
 }
 
@@ -346,101 +257,65 @@ body {
 
 .controlGroup label {
     color: #999;
-
     font-size: 11px;
     font-weight: 700;
-
     letter-spacing: 0.5px;
-
     text-transform: uppercase;
 }
-
-
-/* =========================================================
-   NUMBER / SELECT INPUTS
-   ========================================================= */
 
 input[type="number"],
 select {
     width: 100%;
-
     height: 40px;
-
     padding: 7px 10px;
 
     background: #111;
-
     color: #ddd;
 
     border: 1px solid #3a3a3a;
-
     border-radius: 6px;
 
     outline: none;
-
     font-size: 13px;
 }
 
 input[type="number"]:focus,
 select:focus {
     border-color: #f0a500;
-
-    box-shadow:
-        0 0 0 1px rgba(240,165,0,0.2);
+    box-shadow: 0 0 0 1px rgba(240,165,0,0.2);
 }
-
-
-/* =========================================================
-   COLOR INPUTS
-   ========================================================= */
 
 input[type="color"] {
     width: 100%;
-
     height: 40px;
-
     padding: 2px;
 
     background: #111;
-
     border: 1px solid #3a3a3a;
-
     border-radius: 6px;
 
     cursor: pointer;
 }
 
-
-/* =========================================================
-   CHECKBOX / GRID OPTIONS
-   ========================================================= */
-
 .checkRow {
     display: flex;
     align-items: center;
-
     gap: 9px;
 
     min-height: 38px;
-
     margin-top: 13px;
-
     padding: 7px 9px;
 
     color: #bbb;
-
     font-size: 12px;
 
     background: #181818;
-
     border: 1px solid #303030;
-
     border-radius: 6px;
 }
 
 .checkRow input {
     accent-color: #f0a500;
-
     transform: scale(1.1);
 }
 
@@ -451,11 +326,8 @@ input[type="color"] {
 
 .collapsible {
     margin-top: 13px;
-
     border: 1px solid #333;
-
     border-radius: 7px;
-
     overflow: hidden;
 }
 
@@ -468,14 +340,12 @@ input[type="color"] {
     padding: 0 12px;
 
     background: #181818;
-
     color: #ddd;
 
     font-size: 12px;
     font-weight: 700;
 
     cursor: pointer;
-
     user-select: none;
 }
 
@@ -485,115 +355,303 @@ input[type="color"] {
 
 .collapsible-body {
     display: block;
-
     background: #101010;
-
     border-top: 1px solid #333;
 }
 
 
 /* =========================================================
-   GCODE TEXTAREA
+   BETTER GCODE EDITOR
    ========================================================= */
 
-textarea {
+.gcodeEditor {
     width: 100%;
+    background: #0d0d0d;
+    font-family: Consolas, "Courier New", monospace;
+}
 
-    height: 260px;
 
-    display: block;
+/* TOOLBAR */
 
-    padding: 11px;
+.gcodeEditorToolbar {
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 7px;
+
+    background: #171717;
+    border-bottom: 1px solid #333;
+}
+
+.gcodeSearch {
+    flex: 1;
+    min-width: 0;
+
+    height: 29px;
+
+    padding: 5px 8px;
 
     background: #0d0d0d;
+    color: #ddd;
 
-    color: #00ff66;
-
-    border: none;
+    border: 1px solid #383838;
+    border-radius: 5px;
 
     outline: none;
 
-    resize: vertical;
-
     font-family: Consolas, "Courier New", monospace;
+    font-size: 11px;
+}
+
+.gcodeSearch:focus {
+    border-color: #f0a500;
+}
+
+.gcodeEditorToolbar button {
+    width: 28px;
+    height: 29px;
+
+    padding: 0;
+
+    background: #252525;
+    color: #ccc;
+
+    border: 1px solid #444;
+    border-radius: 5px;
+
+    cursor: pointer;
 
     font-size: 12px;
+    font-weight: 700;
+}
 
+.gcodeEditorToolbar button:hover {
+    background: #333;
+    border-color: #666;
+}
+
+#searchCount {
+    min-width: 45px;
+
+    color: #888;
+
+    text-align: center;
+
+    font-size: 10px;
+    font-family: Consolas, "Courier New", monospace;
+}
+
+#editorLineInfo {
+    min-width: 62px;
+
+    color: #f0a500;
+
+    text-align: right;
+
+    font-size: 10px;
+    font-family: Consolas, "Courier New", monospace;
+}
+
+
+/* EDITOR BODY */
+
+.gcodeEditorBody {
+    position: relative;
+
+    display: flex;
+
+    width: 100%;
+    height: 260px;
+
+    overflow: hidden;
+
+    background: #0d0d0d;
+}
+
+
+/* LINE NUMBERS */
+
+#lineNumbers {
+    width: 48px;
+    min-width: 48px;
+
+    height: 100%;
+
+    padding: 11px 8px 11px 0;
+
+    overflow: hidden;
+
+    background: #151515;
+
+    border-right: 1px solid #2f2f2f;
+
+    color: #666;
+
+    text-align: right;
+
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12px;
     line-height: 1.5;
+
+    user-select: none;
 }
 
-textarea:focus {
-    box-shadow:
-        inset 0 0 0 1px #f0a500;
+.lineNumber {
+    height: 18px;
+
+    cursor: pointer;
+
+    white-space: nowrap;
 }
 
-
-/* =========================================================
-   RESPONSIVE LEFT PANEL
-   ========================================================= */
-
-@media (max-width: 1100px) {
-
-    #sidePanel {
-        width: 360px;
-        min-width: 360px;
-    }
+.lineNumber:hover {
+    color: #bbb;
 }
 
-
-@media (max-width: 900px) {
-
-    #sidePanel {
-        width: 320px;
-        min-width: 320px;
-    }
-
-    .panelBody {
-        padding: 13px;
-    }
-
-    .controlGrid {
-        gap: 10px;
-    }
+.lineNumber.active {
+    color: #f0a500;
+    font-weight: 700;
 }
 
 
-@media (max-width: 700px) {
+/* CODE AREA */
 
-    #sidePanel {
-        width: 300px;
-        min-width: 300px;
+.gcodeCodeArea {
+    position: relative;
 
-        height: calc(100% - 30px);
+    flex: 1;
+    min-width: 0;
+    height: 100%;
 
-        padding: 68px 12px 15px 12px;
+    overflow: hidden;
+}
 
-        /*
-           Keep scrolling enabled on mobile.
-        */
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
 
-    .panelSection {
-        margin-bottom: 12px;
-    }
+/* SYNTAX LAYER */
 
-    .panelTitle {
-        min-height: 40px;
+#syntaxLayer {
+    position: absolute;
 
-        padding: 9px 12px;
-    }
+    top: 0;
+    left: 0;
 
-    .panelBody {
-        padding: 12px;
-    }
+    margin: 0;
 
-    input[type="number"],
-    select,
-    input[type="color"] {
-        height: 38px;
-    }
+    padding: 11px;
+
+    width: max-content;
+    min-width: 100%;
+
+    color: #00ff66;
+
+    white-space: pre;
+
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+
+    pointer-events: none;
+
+    tab-size: 4;
+}
+
+
+/* ACTUAL EDITOR */
+
+#gcode {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+
+    padding: 11px;
+
+    resize: none;
+
+    background: transparent;
+
+    color: transparent;
+
+    caret-color: #f0a500;
+
+    border: none;
+    outline: none;
+
+    overflow: auto;
+
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 12px;
+    line-height: 1.5;
+
+    white-space: pre;
+
+    tab-size: 4;
+
+    z-index: 2;
+
+    -webkit-text-fill-color: transparent;
+}
+
+#gcode:focus {
+    box-shadow: inset 0 0 0 1px #f0a500;
+}
+
+
+/* SYNTAX COLOURS */
+
+.gcode-command {
+    color: #f0a500;
+    font-weight: 700;
+}
+
+.gcode-axis {
+    color: #4fc3f7;
+}
+
+.gcode-feed {
+    color: #ffcc66;
+}
+
+.gcode-spindle {
+    color: #ff66cc;
+}
+
+.gcode-number {
+    color: #a5d6a7;
+}
+
+.gcode-comment {
+    color: #666;
+    font-style: italic;
+}
+
+
+/* SCROLLBARS */
+
+.gcodeEditorBody ::-webkit-scrollbar,
+#gcode::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+#gcode::-webkit-scrollbar-track {
+    background: #111;
+}
+
+#gcode::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 5px;
+}
+
+#gcode::-webkit-scrollbar-thumb:hover {
+    background: #666;
 }
 
 
@@ -616,7 +674,6 @@ textarea:focus {
 
 #canvas {
     position: absolute;
-
     inset: 0;
 
     width: 100%;
@@ -642,30 +699,24 @@ textarea:focus {
     align-items: center;
 
     gap: 7px;
-
     padding: 8px;
 
     background: rgba(25,25,25,0.94);
 
     border: 1px solid #383838;
-
     border-radius: 8px;
 
-    box-shadow:
-        0 5px 20px rgba(0,0,0,0.45);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.45);
 }
 
 #simulationToolbar button {
     height: 34px;
-
     padding: 0 13px;
 
     background: #252525;
-
     color: #ddd;
 
     border: 1px solid #444;
-
     border-radius: 5px;
 
     font-size: 12px;
@@ -709,7 +760,7 @@ textarea:focus {
 
 
 /* =========================================================
-   SPEED CONTROL
+   SPEED
    ========================================================= */
 
 .speedControl {
@@ -717,7 +768,6 @@ textarea:focus {
     align-items: center;
 
     gap: 7px;
-
     padding-left: 5px;
 
     color: #aaa;
@@ -728,17 +778,13 @@ textarea:focus {
 
 #speedVal {
     color: #f0a500;
-
     min-width: 30px;
-
     text-align: right;
-
     font-family: monospace;
 }
 
 input[type="range"] {
     accent-color: #f0a500;
-
     cursor: pointer;
 }
 
@@ -748,7 +794,7 @@ input[type="range"] {
 
 
 /* =========================================================
-   PROGRESS BAR
+   PROGRESS
    ========================================================= */
 
 #progressPanel {
@@ -764,17 +810,14 @@ input[type="range"] {
     align-items: center;
 
     gap: 12px;
-
     padding: 9px 12px;
 
     background: rgba(25,25,25,0.94);
 
     border: 1px solid #383838;
-
     border-radius: 8px;
 
-    box-shadow:
-        0 5px 20px rgba(0,0,0,0.45);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.45);
 }
 
 #progressLabel {
@@ -784,7 +827,6 @@ input[type="range"] {
     font-weight: 700;
 
     text-transform: uppercase;
-
     letter-spacing: 0.8px;
 
     white-space: nowrap;
@@ -792,13 +834,12 @@ input[type="range"] {
 
 #progressSlider {
     flex: 1;
-
     min-width: 100px;
 }
 
 
 /* =========================================================
-   STATUS BAR
+   STATUS
    ========================================================= */
 
 #statusBar {
@@ -816,7 +857,6 @@ input[type="range"] {
     align-items: center;
 
     gap: 22px;
-
     padding: 0 12px;
 
     background: #0d0d0d;
@@ -826,13 +866,11 @@ input[type="range"] {
     color: #999;
 
     font-family: Consolas, "Courier New", monospace;
-
     font-size: 11px;
 }
 
 #statusText {
     color: #00ff66;
-
     min-width: 75px;
 }
 
@@ -846,7 +884,7 @@ input[type="range"] {
 
 
 /* =========================================================
-   FOOTER BRANDING
+   FOOTER
    ========================================================= */
 
 #madHatFooter {
@@ -864,11 +902,9 @@ input[type="range"] {
     background: rgba(15,15,15,0.85);
 
     border: 1px solid #292929;
-
     border-radius: 5px;
 
     font-size: 10px;
-
     letter-spacing: 0.5px;
 
     pointer-events: none;
@@ -882,6 +918,14 @@ input[type="range"] {
 /* =========================================================
    RESPONSIVE
    ========================================================= */
+
+@media (max-width: 1100px) {
+
+    #sidePanel {
+        width: 360px;
+        min-width: 360px;
+    }
+}
 
 @media (max-width: 900px) {
 
@@ -906,14 +950,20 @@ input[type="range"] {
     #madHatFooter {
         left: 292px;
     }
-}
 
+    .panelBody {
+        padding: 13px;
+    }
+
+    .controlGrid {
+        gap: 10px;
+    }
+}
 
 @media (max-width: 700px) {
 
     #madHatHeader {
         height: 52px;
-
         padding: 5px 12px;
     }
 
@@ -948,6 +998,8 @@ input[type="range"] {
         transform: translateX(-100%);
 
         z-index: 80;
+
+        padding: 68px 12px 15px 12px;
     }
 
     #viewport {
@@ -975,8 +1027,26 @@ input[type="range"] {
 
     #statusBar {
         gap: 10px;
-
         font-size: 9px;
+    }
+
+    .panelSection {
+        margin-bottom: 12px;
+    }
+
+    .panelTitle {
+        min-height: 40px;
+        padding: 9px 12px;
+    }
+
+    .panelBody {
+        padding: 12px;
+    }
+
+    input[type="number"],
+    select,
+    input[type="color"] {
+        height: 38px;
     }
 }
 
@@ -1005,10 +1075,6 @@ textarea {
 
 <body>
 
-<!-- =========================================================
-     MAD HAT HEADER
-     ========================================================= -->
-
 <div id="madHatHeader">
 
     <img
@@ -1031,19 +1097,9 @@ textarea {
 </div>
 
 
-<!-- =========================================================
-     MAIN WORKSPACE
-     ========================================================= -->
-
 <div id="workspace">
 
-
-    <!-- =====================================================
-         LEFT PANEL
-         ===================================================== -->
-
     <aside id="sidePanel">
-
 
         <!-- TOOL PANEL -->
 
@@ -1104,7 +1160,6 @@ textarea {
 
                 <div class="controlGrid">
 
-
                     <div class="controlGroup full">
 
                         <label for="toolType">
@@ -1129,7 +1184,6 @@ textarea {
 
                     </div>
 
-
                     <div class="controlGroup">
 
                         <label for="toolRadius">
@@ -1144,7 +1198,6 @@ textarea {
                         >
 
                     </div>
-
 
                     <div class="controlGroup">
 
@@ -1161,7 +1214,6 @@ textarea {
 
                     </div>
 
-
                     <div class="controlGroup full">
 
                         <label for="toolColor">
@@ -1175,7 +1227,6 @@ textarea {
                         >
 
                     </div>
-
 
                 </div>
 
@@ -1196,7 +1247,6 @@ textarea {
 
                 <div class="controlGrid">
 
-
                     <div class="controlGroup">
 
                         <label for="gridSize">
@@ -1212,7 +1262,6 @@ textarea {
                         >
 
                     </div>
-
 
                     <div class="controlGroup">
 
@@ -1230,7 +1279,6 @@ textarea {
 
                     </div>
 
-
                     <div class="controlGroup">
 
                         <label for="labelStep">
@@ -1247,7 +1295,6 @@ textarea {
 
                     </div>
 
-
                     <div class="controlGroup">
 
                         <label for="zOffset">
@@ -1263,9 +1310,7 @@ textarea {
 
                     </div>
 
-
                 </div>
-
 
                 <label class="checkRow">
 
@@ -1309,7 +1354,63 @@ textarea {
                         id="gcodePanel"
                     >
 
-                        <textarea id="gcode">G90
+                        <div class="gcodeEditor">
+
+                            <!-- EDITOR TOOLBAR -->
+
+                            <div class="gcodeEditorToolbar">
+
+                                <input
+                                    type="text"
+                                    id="gcodeSearch"
+                                    class="gcodeSearch"
+                                    placeholder="Search G-code..."
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                >
+
+                                <button
+                                    type="button"
+                                    onclick="findPrevious()"
+                                    title="Previous match"
+                                >
+                                    ▲
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onclick="findNext()"
+                                    title="Next match"
+                                >
+                                    ▼
+                                </button>
+
+                                <span id="searchCount">
+                                    0/0
+                                </span>
+
+                                <span id="editorLineInfo">
+                                    Line 1
+                                </span>
+
+                            </div>
+
+
+                            <!-- EDITOR BODY -->
+
+                            <div class="gcodeEditorBody">
+
+                                <div id="lineNumbers"></div>
+
+                                <div class="gcodeCodeArea">
+
+                                    <pre id="syntaxLayer"></pre>
+
+                                    <textarea
+                                        id="gcode"
+                                        spellcheck="false"
+                                        wrap="off"
+                                    >G90
 G0 X0 Y0 
 G1 Z-1 F200
 G1 X50 Y0
@@ -1328,6 +1429,12 @@ G1 X0 Y50
 G1 X0 Y0
 G0 Z5</textarea>
 
+                                </div>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </div>
@@ -1336,22 +1443,15 @@ G0 Z5</textarea>
 
         </div>
 
-
     </aside>
 
 
-    <!-- =====================================================
-         VIEWPORT
-         ===================================================== -->
+    <!-- VIEWPORT -->
 
     <main id="viewport">
 
         <canvas id="canvas"></canvas>
 
-
-        <!-- =================================================
-             SIMULATION TOOLBAR
-             ================================================= -->
 
         <div id="simulationToolbar">
 
@@ -1403,10 +1503,6 @@ G0 Z5</textarea>
         </div>
 
 
-        <!-- =================================================
-             PROGRESS
-             ================================================= -->
-
         <div id="progressPanel">
 
             <span id="progressLabel">
@@ -1423,15 +1519,10 @@ G0 Z5</textarea>
 
         </div>
 
-
     </main>
 
 </div>
 
-
-<!-- =========================================================
-     STATUS BAR
-     ========================================================= -->
 
 <div id="statusBar">
 
@@ -1449,10 +1540,6 @@ G0 Z5</textarea>
 
 </div>
 
-
-<!-- =========================================================
-     FOOTER
-     ========================================================= -->
 
 <div id="madHatFooter">
 
@@ -1532,6 +1619,7 @@ function resizeRenderer() {
         height,
         false
     );
+
 }
 
 resizeRenderer();
@@ -1589,11 +1677,7 @@ function buildGrid() {
     clearGridLabels();
 
     if (gridGroup) {
-
-        scene.remove(
-            gridGroup
-        );
-
+        scene.remove(gridGroup);
     }
 
     gridGroup =
@@ -1637,9 +1721,7 @@ function buildGrid() {
         Math.PI / 2
     );
 
-    gridGroup.add(
-        grid
-    );
+    gridGroup.add(grid);
 
 
     if (showLabels) {
@@ -1663,8 +1745,6 @@ function buildGrid() {
 
         const labelOffset = 0;
 
-
-        /* X labels */
 
         for (
             let i = 0;
@@ -1700,8 +1780,6 @@ function buildGrid() {
 
         }
 
-
-        /* Y labels */
 
         for (
             let i = 0;
@@ -1750,8 +1828,6 @@ function buildGrid() {
     }
 
 
-    /* Centre lines */
-
     gridGroup.add(
         makeLine(
             new THREE.Vector3(
@@ -1782,8 +1858,6 @@ function buildGrid() {
         )
     );
 
-
-    /* Tick marks */
 
     const tickLength = 2;
 
@@ -1837,9 +1911,7 @@ function buildGrid() {
     }
 
 
-    scene.add(
-        gridGroup
-    );
+    scene.add(gridGroup);
 
 }
 
@@ -1885,9 +1957,7 @@ function makeTextSprite(
 ) {
 
     const labelCanvas =
-        document.createElement(
-            "canvas"
-        );
+        document.createElement("canvas");
 
     const size = 256;
 
@@ -1899,9 +1969,7 @@ function makeTextSprite(
 
 
     const ctx =
-        labelCanvas.getContext(
-            "2d"
-        );
+        labelCanvas.getContext("2d");
 
     ctx.clearRect(
         0,
@@ -1959,13 +2027,9 @@ function makeTextSprite(
     );
 
 
-    scene.add(
-        sprite
-    );
+    scene.add(sprite);
 
-    gridLabels.push(
-        sprite
-    );
+    gridLabels.push(sprite);
 
 }
 
@@ -1974,16 +2038,12 @@ function makeTextSprite(
    GRID INPUTS
    ========================================================= */
 
-const stepInput =
-    document.getElementById(
-        "labelStep"
+document
+    .getElementById("labelStep")
+    .addEventListener(
+        "input",
+        buildGrid
     );
-
-stepInput.addEventListener(
-    "input",
-    buildGrid
-);
-
 
 document
     .getElementById("showLabels")
@@ -2124,9 +2184,7 @@ canvas.addEventListener(
                 v.add(target)
             );
 
-            camera.lookAt(
-                target
-            );
+            camera.lookAt(target);
 
         }
 
@@ -2192,9 +2250,7 @@ canvas.addEventListener(
             );
 
 
-            camera.lookAt(
-                target
-            );
+            camera.lookAt(target);
 
         }
 
@@ -2235,9 +2291,7 @@ canvas.addEventListener(
                 .add(dir)
         );
 
-        camera.lookAt(
-            target
-        );
+        camera.lookAt(target);
 
     },
     { passive: false }
@@ -2286,11 +2340,7 @@ let currentTool =
 function buildTool(opt) {
 
     if (tool) {
-
-        scene.remove(
-            tool
-        );
-
+        scene.remove(tool);
     }
 
 
@@ -2396,9 +2446,7 @@ function buildTool(opt) {
             opt.radius;
 
 
-        group.add(
-            hemi
-        );
+        group.add(hemi);
 
 
         const cyl =
@@ -2418,14 +2466,11 @@ function buildTool(opt) {
             opt.radius;
 
 
-        group.add(
-            cyl
-        );
+        group.add(cyl);
 
 
         group.rotation.x =
             Math.PI / 2;
-
 
         group.position.z =
             0;
@@ -2437,9 +2482,7 @@ function buildTool(opt) {
     }
 
 
-    scene.add(
-        tool
-    );
+    scene.add(tool);
 
 }
 
@@ -2474,26 +2517,17 @@ function syncUI(opt) {
     if (
         opt.type === "cylinder"
     ) {
-
-        typeSel.value =
-            "flat";
-
+        typeSel.value = "flat";
     }
 
     else if (
         opt.type === "sphere"
     ) {
-
-        typeSel.value =
-            "ball";
-
+        typeSel.value = "ball";
     }
 
     else {
-
-        typeSel.value =
-            opt.type;
-
+        typeSel.value = opt.type;
     }
 
 
@@ -2592,13 +2626,9 @@ document
     );
 
 
-syncUI(
-    currentTool
-);
+syncUI(currentTool);
 
-buildTool(
-    currentTool
-);
+buildTool(currentTool);
 
 
 /* =========================================================
@@ -2615,13 +2645,9 @@ let activePathLine =
     null;
 
 
-scene.add(
-    doneGroup
-);
+scene.add(doneGroup);
 
-scene.add(
-    todoGroup
-);
+scene.add(todoGroup);
 
 
 /* =========================================================
@@ -2727,9 +2753,7 @@ function updateActivePath(
 
     const geometry =
         new THREE.BufferGeometry()
-            .setFromPoints(
-                points
-            );
+            .setFromPoints(points);
 
 
     const material =
@@ -2761,13 +2785,8 @@ function updateActivePath(
 
 function clearGroups() {
 
-    scene.remove(
-        doneGroup
-    );
-
-    scene.remove(
-        todoGroup
-    );
+    scene.remove(doneGroup);
+    scene.remove(todoGroup);
 
 
     doneGroup =
@@ -2777,13 +2796,8 @@ function clearGroups() {
         new THREE.Group();
 
 
-    scene.add(
-        doneGroup
-    );
-
-    scene.add(
-        todoGroup
-    );
+    scene.add(doneGroup);
+    scene.add(todoGroup);
 
 }
 
@@ -2886,10 +2900,9 @@ function parseGcode(
                     lastG === 1
                 ) {
 
-                    const target =
-                        {
-                            ...pos
-                        };
+                    const target = {
+                        ...pos
+                    };
 
 
                     if (
@@ -2899,8 +2912,7 @@ function parseGcode(
                         target.x =
                             abs
                                 ? cmd.X
-                                : pos.x +
-                                  cmd.X;
+                                : pos.x + cmd.X;
 
                     }
 
@@ -2912,8 +2924,7 @@ function parseGcode(
                         target.y =
                             abs
                                 ? cmd.Y
-                                : pos.y +
-                                  cmd.Y;
+                                : pos.y + cmd.Y;
 
                     }
 
@@ -2925,8 +2936,7 @@ function parseGcode(
                         target.z =
                             abs
                                 ? cmd.Z
-                                : pos.z +
-                                  cmd.Z;
+                                : pos.z + cmd.Z;
 
                     }
 
@@ -2966,10 +2976,9 @@ function parseGcode(
                             );
 
 
-                        let prev =
-                            {
-                                ...pos
-                            };
+                        let prev = {
+                            ...pos
+                        };
 
 
                         for (
@@ -3017,15 +3026,13 @@ function parseGcode(
 
                             segments.push({
 
-                                from:
-                                    {
-                                        ...prev
-                                    },
+                                from: {
+                                    ...prev
+                                },
 
-                                to:
-                                    {
-                                        ...cur
-                                    },
+                                to: {
+                                    ...cur
+                                },
 
                                 rapid:
                                     lastG === 0,
@@ -3055,8 +3062,6 @@ function parseGcode(
             }
         );
 
-
-    /* Z ZERO */
 
     let minZ =
         Infinity;
@@ -3116,21 +3121,15 @@ function parseGcode(
    ========================================================= */
 
 let idx = 0;
-
 let t = 0;
-
 let running = false;
-
 let feed = 100;
 
 let batchedSegments = [];
 
 let totalPathDistance = 0;
-
 let simulatedDistance = 0;
-
 let distanceIntoSegment = 0;
-
 let currentSegmentIndex = 0;
 
 
@@ -3262,7 +3261,6 @@ function buildTodoPath() {
 
 
     todoGroup.clear();
-
     doneGroup.clear();
 
     clearActivePath();
@@ -3316,28 +3314,357 @@ function buildTodoPath() {
 
 
 /* =========================================================
-   GCODE LINE HIGHLIGHT
+   BETTER GCODE EDITOR
    ========================================================= */
 
-function highlightLine(line) {
+const gcode =
+    document.getElementById(
+        "gcode"
+    );
 
-    const ta =
-        gcode;
+const lineNumbers =
+    document.getElementById(
+        "lineNumbers"
+    );
 
-    const lines =
-        ta.value.split("\n");
+const syntaxLayer =
+    document.getElementById(
+        "syntaxLayer"
+    );
+
+const gcodeSearch =
+    document.getElementById(
+        "gcodeSearch"
+    );
+
+const searchCount =
+    document.getElementById(
+        "searchCount"
+    );
+
+const editorLineInfo =
+    document.getElementById(
+        "editorLineInfo"
+    );
 
 
-    if (
-        !lines[line]
+function escapeHTML(str) {
+
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/*
+    Syntax highlighting is tokenised directly from
+    the raw G-code line.
+
+    This avoids the common problem where later
+    regex replacements accidentally match the
+    HTML tags inserted by earlier replacements.
+*/
+
+function highlightGcodeLine(line) {
+
+    const commentIndex =
+        line.indexOf(";");
+
+    let code =
+        commentIndex >= 0
+            ? line.slice(
+                0,
+                commentIndex
+            )
+            : line;
+
+    const comment =
+        commentIndex >= 0
+            ? line.slice(
+                commentIndex
+            )
+            : "";
+
+
+    const tokenRegex =
+        /([GMT]\s*\d+(?:\.\d+)?)|([XYZABCUVWIJKR]\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+))|([F]\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+))|([S]\s*[+-]?(?:\d+(?:\.\d*)?|\.\d+))|([+-]?(?:\d+(?:\.\d*)?|\.\d+))/gi;
+
+
+    let result = "";
+    let lastIndex = 0;
+
+
+    code.replace(
+        tokenRegex,
+        (
+            match,
+            command,
+            axis,
+            feedToken,
+            spindleToken,
+            number,
+            offset
+        ) => {
+
+            const index =
+                arguments.length > 6
+                    ? offset
+                    : 0;
+
+            return match;
+
+        }
+    );
+
+
+    /*
+       Use exec manually so the source position
+       remains reliable.
+    */
+
+    tokenRegex.lastIndex = 0;
+
+    let match;
+
+
+    while (
+        (match =
+            tokenRegex.exec(code)) !== null
     ) {
-        return;
+
+        result +=
+            escapeHTML(
+                code.slice(
+                    lastIndex,
+                    match.index
+                )
+            );
+
+
+        const token =
+            match[0];
+
+        let cls =
+            "gcode-number";
+
+
+        if (match[1]) {
+            cls = "gcode-command";
+        }
+
+        else if (match[2]) {
+            cls = "gcode-axis";
+        }
+
+        else if (match[3]) {
+            cls = "gcode-feed";
+        }
+
+        else if (match[4]) {
+            cls = "gcode-spindle";
+        }
+
+
+        result +=
+            `<span class="${cls}">` +
+            escapeHTML(token) +
+            `</span>`;
+
+
+        lastIndex =
+            match.index +
+            token.length;
+
     }
 
 
-    ta.focus({
-        preventScroll: true
-    });
+    result +=
+        escapeHTML(
+            code.slice(lastIndex)
+        );
+
+
+    if (comment) {
+
+        result +=
+            `<span class="gcode-comment">` +
+            escapeHTML(comment) +
+            `</span>`;
+
+    }
+
+
+    return result || " ";
+
+}
+
+
+function updateSyntaxLayer() {
+
+    const lines =
+        gcode.value.split("\n");
+
+
+    syntaxLayer.innerHTML =
+        lines
+            .map(highlightGcodeLine)
+            .join("\n");
+
+}
+
+
+function updateLineNumbers() {
+
+    const lines =
+        gcode.value.split("\n");
+
+
+    lineNumbers.innerHTML =
+        lines
+            .map(
+                (_, i) =>
+                    `<div class="lineNumber" ` +
+                    `onclick="jumpToGcodeLine(${i})">` +
+                    `${i + 1}</div>`
+            )
+            .join("");
+
+
+    updateActiveLineNumber(
+        getCursorLine()
+    );
+
+}
+
+
+function updateActiveLineNumber(line) {
+
+    const nums =
+        lineNumbers.querySelectorAll(
+            ".lineNumber"
+        );
+
+
+    nums.forEach(
+        (el, i) => {
+
+            el.classList.toggle(
+                "active",
+                i === line
+            );
+
+        }
+    );
+
+
+    editorLineInfo.textContent =
+        `Line ${line + 1}`;
+
+}
+
+
+function getCursorLine() {
+
+    const before =
+        gcode.value.slice(
+            0,
+            gcode.selectionStart
+        );
+
+
+    return (
+        before.match(/\n/g) ||
+        []
+    ).length;
+
+}
+
+
+function currentEditorLine() {
+
+    return getCursorLine();
+
+}
+
+
+/*
+   Keep syntax and textarea scrolling perfectly
+   aligned.
+*/
+
+function syncEditorScroll() {
+
+    syntaxLayer.style.transform =
+        `translate(${-gcode.scrollLeft}px, ` +
+        `${-gcode.scrollTop}px)`;
+
+
+    lineNumbers.scrollTop =
+        gcode.scrollTop;
+
+}
+
+
+/*
+   Scroll a requested line into view.
+*/
+
+function scrollEditorLineIntoView(line) {
+
+    const lineHeight =
+        parseFloat(
+            getComputedStyle(gcode)
+                .lineHeight
+        ) || 18;
+
+
+    const desired =
+        Math.max(
+            0,
+            (
+                line -
+                3
+            ) *
+            lineHeight
+        );
+
+
+    const maxScroll =
+        gcode.scrollHeight -
+        gcode.clientHeight;
+
+
+    gcode.scrollTop =
+        Math.min(
+            desired,
+            Math.max(
+                0,
+                maxScroll
+            )
+        );
+
+
+    syncEditorScroll();
+
+}
+
+
+function jumpToGcodeLine(line) {
+
+    const lines =
+        gcode.value.split("\n");
+
+
+    if (
+        line < 0 ||
+        line >= lines.length
+    ) {
+        return;
+    }
 
 
     let start = 0;
@@ -3356,6 +3683,431 @@ function highlightLine(line) {
     }
 
 
+    gcode.focus({
+        preventScroll: true
+    });
+
+
+    gcode.setSelectionRange(
+        start,
+        start +
+        lines[line].length
+    );
+
+
+    updateActiveLineNumber(line);
+
+    scrollEditorLineIntoView(line);
+
+
+    jumpSimulatorToLine(line);
+
+}
+
+
+function jumpSimulatorToLine(line) {
+
+    if (
+        !segments.length ||
+        totalPathDistance <= 0
+    ) {
+        return;
+    }
+
+
+    let distanceBefore = 0;
+
+    let found = false;
+
+
+    for (
+        let i = 0;
+        i < segments.length;
+        i++
+    ) {
+
+        if (
+            segments[i].line >= line
+        ) {
+
+            found = true;
+            break;
+
+        }
+
+
+        distanceBefore +=
+            segments[i].distance || 0;
+
+    }
+
+
+    if (!found) {
+
+        distanceBefore =
+            totalPathDistance;
+
+    }
+
+
+    setProgress(
+        totalPathDistance > 0
+            ? distanceBefore /
+              totalPathDistance
+            : 0
+    );
+
+}
+
+
+function refreshGcodeEditor() {
+
+    updateSyntaxLayer();
+
+    updateLineNumbers();
+
+    updateSearchResults();
+
+    updateActiveLineNumber(
+        getCursorLine()
+    );
+
+    syncEditorScroll();
+
+}
+
+
+/* =========================================================
+   EDITOR CURSOR / SCROLL EVENTS
+   ========================================================= */
+
+[
+    "click",
+    "keyup",
+    "select",
+    "input"
+].forEach(
+    eventName => {
+
+        gcode.addEventListener(
+            eventName,
+            () => {
+
+                updateActiveLineNumber(
+                    getCursorLine()
+                );
+
+                syncEditorScroll();
+
+            }
+        );
+
+    }
+);
+
+
+gcode.addEventListener(
+    "scroll",
+    syncEditorScroll
+);
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+let searchMatches = [];
+
+let searchIndex = -1;
+
+
+function updateSearchResults() {
+
+    const query =
+        gcodeSearch.value;
+
+
+    searchMatches = [];
+
+    searchIndex = -1;
+
+
+    if (!query) {
+
+        searchCount.textContent =
+            "0/0";
+
+        return;
+
+    }
+
+
+    const source =
+        gcode.value.toLowerCase();
+
+    const needle =
+        query.toLowerCase();
+
+
+    let pos = 0;
+
+
+    while (
+        (pos =
+            source.indexOf(
+                needle,
+                pos
+            )) !== -1
+    ) {
+
+        searchMatches.push(pos);
+
+        pos +=
+            Math.max(
+                1,
+                needle.length
+            );
+
+    }
+
+
+    if (searchMatches.length) {
+
+        searchIndex = 0;
+
+        selectSearchMatch();
+
+    }
+
+    else {
+
+        searchCount.textContent =
+            "0/0";
+
+    }
+
+}
+
+
+function selectSearchMatch() {
+
+    if (
+        searchIndex < 0 ||
+        !searchMatches.length
+    ) {
+        searchCount.textContent =
+            "0/0";
+
+        return;
+    }
+
+
+    const start =
+        searchMatches[
+            searchIndex
+        ];
+
+
+    const end =
+        start +
+        gcodeSearch.value.length;
+
+
+    gcode.focus({
+        preventScroll: true
+    });
+
+
+    gcode.setSelectionRange(
+        start,
+        end
+    );
+
+
+    const line =
+        getCursorLine();
+
+
+    updateActiveLineNumber(line);
+
+    scrollEditorLineIntoView(line);
+
+
+    searchCount.textContent =
+        `${searchIndex + 1}/` +
+        `${searchMatches.length}`;
+
+}
+
+
+function findNext() {
+
+    if (
+        !searchMatches.length
+    ) {
+
+        updateSearchResults();
+
+        return;
+
+    }
+
+
+    searchIndex++;
+
+    if (
+        searchIndex >=
+        searchMatches.length
+    ) {
+        searchIndex = 0;
+    }
+
+
+    selectSearchMatch();
+
+}
+
+
+function findPrevious() {
+
+    if (
+        !searchMatches.length
+    ) {
+
+        updateSearchResults();
+
+        return;
+
+    }
+
+
+    searchIndex--;
+
+    if (
+        searchIndex < 0
+    ) {
+        searchIndex =
+            searchMatches.length - 1;
+    }
+
+
+    selectSearchMatch();
+
+}
+
+
+gcodeSearch.addEventListener(
+    "input",
+    updateSearchResults
+);
+
+
+gcodeSearch.addEventListener(
+    "keydown",
+    e => {
+
+        if (
+            e.key === "Enter"
+        ) {
+
+            e.preventDefault();
+
+            if (
+                e.shiftKey
+            ) {
+                findPrevious();
+            }
+
+            else {
+                findNext();
+            }
+
+        }
+
+        if (
+            e.key === "Escape"
+        ) {
+
+            gcodeSearch.value = "";
+
+            updateSearchResults();
+
+            gcode.focus();
+
+        }
+
+    }
+);
+
+
+/*
+   Ctrl+F focuses the G-code search box.
+*/
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if (
+            (e.ctrlKey || e.metaKey) &&
+            e.key.toLowerCase() === "f"
+        ) {
+
+            e.preventDefault();
+
+            gcodeSearch.focus();
+
+            gcodeSearch.select();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   GCODE LINE HIGHLIGHT
+   ========================================================= */
+
+function highlightLine(line) {
+
+    const lines =
+        gcode.value.split("\n");
+
+
+    if (
+        line < 0 ||
+        line >= lines.length
+    ) {
+        return;
+    }
+
+
+    const ta =
+        gcode;
+
+
+    let start = 0;
+
+
+    for (
+        let i = 0;
+        i < line;
+        i++
+    ) {
+
+        start +=
+            lines[i].length +
+            1;
+
+    }
+
+
+    ta.focus({
+        preventScroll: true
+    });
+
+
     ta.setSelectionRange(
         start,
         start +
@@ -3363,43 +4115,9 @@ function highlightLine(line) {
     );
 
 
-    const lineHeight =
-        ta.scrollHeight /
-        lines.length;
+    updateActiveLineNumber(line);
 
-
-    const topOffsetLines = 3;
-
-
-    let targetScroll =
-        (
-            line -
-            topOffsetLines
-        ) *
-        lineHeight;
-
-
-    const maxScroll =
-        ta.scrollHeight -
-        ta.clientHeight;
-
-
-    targetScroll =
-        Math.max(
-            0,
-            Math.min(
-                targetScroll,
-                maxScroll
-            )
-        );
-
-
-    ta.scrollTop +=
-        (
-            targetScroll -
-            ta.scrollTop
-        ) *
-        0.45;
+    scrollEditorLineIntoView(line);
 
 }
 
@@ -3454,6 +4172,9 @@ function resetSim() {
 
     posText.textContent =
         "X:0 Y:0 Z:0";
+
+
+    refreshGcodeEditor();
 
 }
 
@@ -3538,9 +4259,7 @@ progressSlider.addEventListener(
             progressSlider.max;
 
 
-        setProgress(
-            norm
-        );
+        setProgress(norm);
 
 
         statusText.textContent =
@@ -3737,9 +4456,7 @@ function setProgress(norm) {
         `Line: ${line + 1}`;
 
 
-    highlightLine(
-        line
-    );
+    highlightLine(line);
 
 
     posText.textContent =
@@ -3845,9 +4562,7 @@ function createLabel(
 ) {
 
     const labelCanvas =
-        document.createElement(
-            "canvas"
-        );
+        document.createElement("canvas");
 
     const size = 128;
 
@@ -3859,9 +4574,7 @@ function createLabel(
 
 
     const ctx =
-        labelCanvas.getContext(
-            "2d"
-        );
+        labelCanvas.getContext("2d");
 
 
     ctx.fillStyle =
@@ -3910,9 +4623,7 @@ function createLabel(
     );
 
 
-    scene.add(
-        sprite
-    );
+    scene.add(sprite);
 
 }
 
@@ -4084,8 +4795,6 @@ function animate(tn) {
             );
 
 
-            /* Live toolpath */
-
             updateActivePath(
                 batch,
                 currentSegmentIndex,
@@ -4107,9 +4816,7 @@ function animate(tn) {
                 !scrubbing
             ) {
 
-                highlightLine(
-                    line
-                );
+                highlightLine(line);
 
             }
 
@@ -4296,14 +5003,14 @@ fileInput.addEventListener(
                 );
 
 
+                refreshGcodeEditor();
+
                 resetSim();
 
             };
 
 
-        r.readAsText(
-            f
-        );
+        r.readAsText(f);
 
     }
 );
@@ -4495,7 +5202,7 @@ function toggleGcode() {
 
 
 /* =========================================================
-   GCODE EDITOR LIVE REBUILD
+   GCODE LIVE REBUILD
    ========================================================= */
 
 gcode.addEventListener(
@@ -4508,19 +5215,34 @@ gcode.addEventListener(
 
         buildTodoPath();
 
+
         idx = 0;
-        currentSegmentIndex = 0;
-        distanceIntoSegment = 0;
-        simulatedDistance = 0;
+
+        currentSegmentIndex =
+            0;
+
+        distanceIntoSegment =
+            0;
+
+        simulatedDistance =
+            0;
+
         running = false;
 
-        progressSlider.value = 0;
+
+        progressSlider.value =
+            0;
+
 
         statusText.textContent =
             "G-code Updated";
 
+
         lineText.textContent =
             "Line: –";
+
+
+        refreshGcodeEditor();
 
     }
 );
@@ -4538,11 +5260,11 @@ parseGcode(
 
 buildTodoPath();
 
+refreshGcodeEditor();
+
 resetSim();
 
-animate(
-    last
-);
+animate(last);
 
 </script>
 
