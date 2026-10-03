@@ -5700,26 +5700,47 @@ function setProgress(norm) {
         ] || 1;
 
 
-    const segmentT =
-        localDistance /
-        segmentDistance;
-
-
-    t =
-        segmentT;
-
-
-    tool.position.lerpVectors(
-        a,
-        b,
-        segmentT
+const segmentT =
+    Math.max(
+        0,
+        Math.min(
+            1,
+            localDistance /
+            segmentDistance
+        )
     );
 
 
-    const line =
-        batch.lines[
-            currentSegmentIndex
-        ];
+t =
+    segmentT;
+
+
+tool.position.lerpVectors(
+    a,
+    b,
+    segmentT
+);
+
+
+/*
+   Update the active toolpath immediately
+   when manually scrubbing or jumping to a
+   G-code line. This keeps the highlighted
+   path synced with the tool position even
+   when the simulator is paused.
+*/
+
+updateActivePath(
+    batch,
+    currentSegmentIndex,
+    segmentT
+);
+
+
+const line =
+    batch.lines[
+        currentSegmentIndex
+    ];
 
 
     lineText.textContent =
